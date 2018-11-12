@@ -20,12 +20,12 @@ COMPOUNDFORBIDFLAG    FF
 COMPOUNDMIN           1
 
 # Amrazi Ko
-SFX ko      N        2
+SFX ko      Y        2
 SFX ko      0        ەکان/j1       [^اۆەێ]
 SFX ko      0        یەکان/j1       .
 
 # Jenawi lkawi komalay yakam
-SFX j1      N        6
+SFX j1      Y        6
 SFX j1      0        م         .
 SFX j1      0        ت         .
 SFX j1      0        ی         .
