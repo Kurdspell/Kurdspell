@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="F23.StringSimilarity" Version="3.1.0" />
+    <PackageReference Include="Fastenshtein" Version="1.0.0.5" />
+  </ItemGroup>
+
+</Project>
