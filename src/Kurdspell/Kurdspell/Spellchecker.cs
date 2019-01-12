@@ -7,13 +7,30 @@ using System.Threading.Tasks;
 
 namespace Kurdspell
 {
-    public class Spellchecker
+    public class SpellChecker
     {
         private readonly List<Pattern> _patterns;
         private readonly List<Rule> _rules;
         private readonly Dictionary<char, List<Pattern>> _dictionary;
 
-        public Spellchecker(string dictionaryPath)
+        public SpellChecker(List<Pattern> patterns, List<Rule> rules)
+        {
+            _patterns = patterns;
+            _rules = rules;
+            _dictionary = new Dictionary<char, List<Pattern>>();
+
+            foreach (var pattern in _patterns)
+            {
+                if (!_dictionary.ContainsKey(pattern.Template[0]))
+                {
+                    _dictionary[pattern.Template[0]] = new List<Pattern>();
+                }
+
+                _dictionary[pattern.Template[0]].Add(pattern);
+            }
+        }
+
+        public SpellChecker(string dictionaryPath)
         {
             _patterns = PatternsRepository.GetPatterns();
             _rules = PatternsRepository.GetRules();
@@ -36,18 +53,18 @@ namespace Kurdspell
                 return true;
 
             var length = word.Length;
-            var firstChar = length >= 1 ? word[0] : '\0';
             var secondChar = length >= 2 ? word[1] : '\0';
             var thirdChar = length >= 3 ? word[2] : '\0';
             var fourthChar = length >= 4 ? word[3] : '\0';
             var fifthChar = length >= 5 ? word[4] : '\0';
 
-            if (_dictionary.TryGetValue(firstChar, out var patterns))
+            if (_dictionary.TryGetValue(word[0], out var patterns))
             {
                 bool found = false;
-                Parallel.For(0, 1, (i, state) =>
+
+                Parallel.For(0, patterns.Count, (i, state) =>
                 {
-                    if (patterns[i].IsExactly(word, length, firstChar, secondChar, thirdChar, fourthChar, firstChar, _rules))
+                    if (patterns[i].IsExactly(word, length, secondChar, thirdChar, fourthChar, fifthChar, _rules))
                     {
                         found = true;
                         state.Break();

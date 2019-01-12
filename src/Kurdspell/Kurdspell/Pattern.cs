@@ -76,15 +76,10 @@ namespace Kurdspell
         private readonly char _fifthChar;
         private readonly byte _length;
 
-        public bool IsExactly(string word, int wLength, char wFirstChar, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyList<Rule> rules, int partIndex = 1, int charIndex = 0)
+        public bool IsExactly(string word, int wLength, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyList<Rule> rules, int partIndex = 1, int charIndex = 0)
         {
             if (charIndex == 0)
             {
-                if (_firstChar != wFirstChar)
-                {
-                    return false;
-                }
-
                 bool cont = true;
                 if (cont)
                 {
@@ -215,7 +210,7 @@ namespace Kurdspell
                         shouldGoOn = false;
                         foreach (var match in matches)
                         {
-                            shouldGoOn = IsExactly(word, wLength, wFirstChar, wSecondChar, wThirdChar, wFourthChar, wFifthChar, rules, partIndex + 1, charIndex + variants[match].Length);
+                            shouldGoOn = IsExactly(word, wLength, wSecondChar, wThirdChar, wFourthChar, wFifthChar, rules, partIndex + 1, charIndex + variants[match].Length);
 
                             if (shouldGoOn)
                                 return true;
@@ -246,7 +241,8 @@ namespace Kurdspell
                     charIndex += length;
                 }
             }
-            return true;
+
+            return charIndex == wLength;
         }
 
         private static bool CanBeTheSame(string variant, int vLength, string text, int tLength, int charIndex)
@@ -314,8 +310,8 @@ namespace Kurdspell
                         shouldGoOn = false;
                         foreach (var match in matches)
                         {
-                            builder.Append(variants[match]);
                             var originalLength = builder.Length;
+                            builder.Append(variants[match]);
 
                             shouldGoOn = IsCloseEnough(word, rules, builder, i + 1);
                             builder.Remove(originalLength, builder.Length - originalLength);
@@ -421,41 +417,32 @@ namespace Kurdspell
             });
 
             var suggestions = new List<string>();
-            int smallest = int.MaxValue;
-            int biggest = int.MaxValue;
 
-            foreach(var pattern in closePatterns)
-            {
-                var possibilities = pattern.Expand(rules).ToList();
-                var list = new List<string>(30);
+            if (closePatterns.Count == 0)
+                return suggestions;
 
-                foreach (var possiblity in possibilities)
-                {
-                    var variant = string.Join(string.Empty, possiblity);
-
-                    if (suggestions.Count >= n)
-                        return suggestions;
-
-                    var distance = Levenshtein.GetDistanceTwoRows(variant, word);
-                    if (distance < smallest)
-                    {
-                        smallest = distance;
-
-                        if (distance > biggest)
+            var setsOfVariants = closePatterns
+                    .Select(p => p.Expand(rules)
+                        .Select(v => string.Join(string.Empty, v))
+                        .Distinct()
+                        .Select(v => new
                         {
-                            biggest = distance;
-                        }
+                            Variant = v,
+                            Distance = Levenshtein.GetDistanceTwoRows(word, v)
+                        })
+                        .OrderBy(i => i.Distance)
+                        .Take(n)
+                        .ToList()
+                    ).ToList();
 
-                        suggestions.Add(variant);
-                    }
-                    else if (distance <= biggest)
-                    {
-                        suggestions.Add(variant);
-                    }
-                }
-            }
+            return setsOfVariants.SelectMany(s => s)
+                                .OrderBy(s => s.Distance)
+                                .Take(n)
+                                .Select(i => i.Variant)
+                                .ToList();
 
-            return suggestions;
+           // TODO: Interleave the suggestions from all of the patterns
+           // when they are at the same distance from the word
         }
 
         public override string ToString() => Template;
@@ -463,7 +450,7 @@ namespace Kurdspell
 
     public struct Rule
     {
-        public Rule(string[] values) : this()
+        public Rule(params string[] values) : this()
         {
             Values = values;
         }

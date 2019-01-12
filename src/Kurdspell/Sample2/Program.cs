@@ -11,7 +11,7 @@ namespace Sample2
         static void Main(string[] args)
         {
             // Load the language dictionary into the Spellchecker
-            Kurdspell kurdspell = new Kurdspell("ckb-IQ.txt");
+            SpellChecker spellChecker = new SpellChecker("ckb-IQ.txt");
 
             while(true)
             {
@@ -20,14 +20,14 @@ namespace Sample2
                 string word = Console.ReadLine();
                 
                 // Check if the word is correct
-                if (kurdspell.Check(word))
+                if (spellChecker.Check(word))
                 {
                     Console.WriteLine("Correct!");
                 }
                 else
                 {
-                    // Give the user a list of suggestions
-                    List<string> suggestions = kurdspell.Suggest(word, 3);
+                    // Give the user at most 3 suggestions
+                    List<string> suggestions = spellChecker.Suggest(word, 3);
 
                     Console.WriteLine("Incorrect, Suggestions: ");
                     foreach(string suggestion in suggestions)

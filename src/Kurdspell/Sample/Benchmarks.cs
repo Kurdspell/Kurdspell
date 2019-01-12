@@ -9,7 +9,7 @@ namespace Sample
 {
     public class Benchmarks
     {
-        private static readonly Spellchecker _kurdspell;
+        private static readonly SpellChecker _kurdspell;
         private static readonly List<string> _words = new List<string>
         {
             "dexom",
@@ -21,7 +21,7 @@ namespace Sample
 
         static Benchmarks()
         {
-            _kurdspell = new Spellchecker("");
+            _kurdspell = new SpellChecker("");
         }
 
         [Benchmark]
@@ -45,7 +45,7 @@ namespace Sample
         [Benchmark]
         public void Construct()
         {
-            var kurdspell = new Spellchecker("");
+            var kurdspell = new SpellChecker("");
         }
     }
 }
