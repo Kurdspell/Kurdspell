@@ -94,17 +94,17 @@ namespace Sample3
                 }
                 else
                 {
-                    commands.Add(new MenuAction()
-                    {
-                        Name = "Add custom",
-                        Command = new DelegateCommand(
-                            delegate
-                            {
-                                SaveToCustomDictionary(SelectedMisspelledWord);
+                    //commands.Add(new MenuAction()
+                    //{
+                    //    Name = "Add custom",
+                    //    Command = new DelegateCommand(
+                    //        delegate
+                    //        {
+                    //            SaveToCustomDictionary(SelectedMisspelledWord);
 
-                                _box.FireTextChangeEvent();
-                            })
-                    });
+                    //            _box.FireTextChangeEvent();
+                    //        })
+                    //});
                 }
 
                 return new ObservableCollection<MenuAction>(commands);
