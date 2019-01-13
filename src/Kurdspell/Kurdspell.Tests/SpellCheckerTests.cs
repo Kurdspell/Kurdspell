@@ -7,6 +7,7 @@ namespace Kurdspell.Tests
     public class SpellCheckerTests
     {
         [Theory]
+        [InlineData("d", false)]
         [InlineData("dexom", true)]
         [InlineData("dekrrim", true)]
         [InlineData("supastandekeyn", true)]

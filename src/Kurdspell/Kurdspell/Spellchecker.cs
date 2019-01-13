@@ -82,6 +82,8 @@ namespace Kurdspell
             if (word == string.Empty)
                 return new List<string>();
 
+            word = word.ToLower();
+
             if (_dictionary.TryGetValue(word[0], out var patterns))
             {
                 return Pattern.GetTop(patterns, word, count, _rules);

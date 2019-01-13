@@ -14,7 +14,7 @@ namespace Kurdspell
                 new Rule(new string[] { "m", "in", "a", "n", "et", "n" }),
                 new Rule(new string[] { "om", "oyn", "oyt", "on", "wat", "on" }),
                 new Rule(new string[] { "m", "in", "t", "n", "et", "n" }),
-                new Rule(new string[] { "yaka", "yek", "akan", "yan", "" }),
+                new Rule(new string[] { "yaka", "yek", "yakan", "yan", "" }),
                 new Rule(new string[] { "ish", "" }),
             };
         }
@@ -30,10 +30,10 @@ namespace Kurdspell
                 new Pattern("Mamosta{4}{0}{5}"),
             };
 
-            for (int i = 0; i < 100_000; i++)
-            {
-                list.Add(new Pattern(GetRandomPattern(5)));
-            }
+            //for (int i = 0; i < 100_000; i++)
+            //{
+            //    list.Add(new Pattern(GetRandomPattern(5)));
+            //}
 
             return list;
         }
