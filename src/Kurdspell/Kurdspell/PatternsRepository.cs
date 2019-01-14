@@ -19,6 +19,48 @@ namespace Kurdspell
             };
         }
 
+        public static List<Rule> GetKurdishRules()
+        {
+            return new List<Rule>
+            {
+                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان" }),
+                new Rule(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
+                new Rule(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
+                new Rule(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
+                new Rule(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
+                new Rule(new string[] { "یش", "" }),
+                 new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
+            };
+        }
+
+        public static List<Pattern> GetKurdishPatterns()
+        {
+            return new List<Pattern>
+            {
+                new Pattern("ب{0}بەخش{1}"),
+                new Pattern("دەخ{2}"),
+                new Pattern("دەکڕ{3}"),
+                new Pattern("دەچ{3}"),
+                new Pattern("مامۆستا{4}{0}{5}"),
+
+                new Pattern("دارا{6}"),
+                new Pattern("دوو"),
+                new Pattern("دار{4}{6}{5}"),
+                new Pattern("دیت"),
+                new Pattern("دوور{6}"),
+                new Pattern("ئۆی"),
+                new Pattern("دادە{6}"),
+                new Pattern("وەرە"),
+                new Pattern("دەرێ"),
+                new Pattern("دەوێ"),
+                new Pattern("ئەوە"),
+                new Pattern("ئازاد{6}"),
+                new Pattern("دۆ{6}"),
+                new Pattern("ئاو{6}"),
+                new Pattern("زۆرە"),
+            };
+        }
+
         public static List<Pattern> GetPatterns()
         {
             var list = new List<Pattern>

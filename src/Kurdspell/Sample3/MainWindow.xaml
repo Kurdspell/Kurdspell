@@ -8,7 +8,7 @@
         Title="Kurdspell Demo" Height="450" Width="800">
 
     <Grid>
-        <local:SpellTextBox IsSpellCheckEnabled="True" FontSize="32" x:Name="spellTextBox" AcceptsReturn="True" />
+        <local:SpellTextBox FlowDirection="RightToLeft" IsSpellCheckEnabled="True" FontSize="32" x:Name="spellTextBox" AcceptsReturn="True" />
     </Grid>
 
 </Window>

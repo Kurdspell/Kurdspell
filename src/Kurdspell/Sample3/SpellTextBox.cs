@@ -169,7 +169,7 @@ namespace Sample3
 
         private SpellCheckerVM CreateSpellCheker()
         {
-            checker = new SpellCheckerVM(new SpellChecker(""), this);
+            checker = new SpellCheckerVM(new SpellChecker(PatternsRepository.GetKurdishPatterns(), PatternsRepository.GetKurdishRules()), this);
             checker.LoadCustomDictionary();
             return checker;
         }
