@@ -167,6 +167,9 @@ namespace Kurdspell
                             break;
                         }
 
+                        if (charIndex >= wLength)
+                            return false;
+
                         if (current != word[charIndex])
                         {
                             return false;

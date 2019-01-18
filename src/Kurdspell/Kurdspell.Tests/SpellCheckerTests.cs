@@ -7,7 +7,6 @@ namespace Kurdspell.Tests
     public class SpellCheckerTests
     {
         [Theory]
-        [InlineData("دوورمان", true)]
         [InlineData("d", false)]
         [InlineData("dexom", true)]
         [InlineData("dekrrim", true)]
@@ -26,7 +25,6 @@ namespace Kurdspell.Tests
                 new Rule("em", "eyn", "eyt", "en", "at", "en"),
                 new Rule(new string[] { "m", "in", "a", "n", "et", "n" }),
                 new Rule(new string[] { "ish", "" }),
-                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
             };
 
             var patterns = new List<Pattern>
@@ -35,7 +33,35 @@ namespace Kurdspell.Tests
                 new Pattern("dekrr{1}"),
                 new Pattern("supas{2}dek{3}"),
                 new Pattern("m{4}{5}mos"),
-                new Pattern("دوور{6}"),
+            };
+
+            var spellChecker = new SpellChecker(patterns, rules);
+
+            var actual = spellChecker.Check(word);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData("دوورمان", true)]
+        [InlineData("مامۆست", false)]
+        public void CheckSpellingKurdish(string word, bool expected)
+        {
+            var rules = new List<Rule>
+            {
+                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }),
+                new Rule(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
+                new Rule(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
+                new Rule(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
+                new Rule(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
+                new Rule(new string[] { "یش", "ێک","" }),
+                new Rule(new string[] { "وە", "ووە","" }),
+                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
+            };
+
+            var patterns = new List<Pattern>
+            {
+                new Pattern("دوور{0}"),
+                new Pattern("مامۆستا{4}{0}{5}")
             };
 
             var spellChecker = new SpellChecker(patterns, rules);
