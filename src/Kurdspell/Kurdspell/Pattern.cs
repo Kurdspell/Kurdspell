@@ -167,6 +167,9 @@ namespace Kurdspell
                             break;
                         }
 
+                        if (charIndex >= wLength)
+                            return false;
+
                         if (current != word[charIndex])
                         {
                             return false;
@@ -200,7 +203,8 @@ namespace Kurdspell
                         if (CanBeTheSame(variant, variant.Length, word, wLength, charIndex))
                         {
                             shouldGoOn = true;
-                            goodLength += variant.Length;
+                            if (goodLength < variant.Length)
+                                goodLength = variant.Length;
                             matches.Add(j);
                         }
                     }
@@ -441,8 +445,8 @@ namespace Kurdspell
                                 .Select(i => i.Variant)
                                 .ToList();
 
-           // TODO: Interleave the suggestions from all of the patterns
-           // when they are at the same distance from the word
+            // TODO: Interleave the suggestions from all of the patterns
+            // when they are at the same distance from the word
         }
 
         public override string ToString() => Template;

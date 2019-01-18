@@ -42,6 +42,35 @@ namespace Kurdspell.Tests
         }
 
         [Theory]
+        [InlineData("دوورمان", true)]
+        [InlineData("مامۆست", false)]
+        public void CheckSpellingKurdish(string word, bool expected)
+        {
+            var rules = new List<Rule>
+            {
+                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }),
+                new Rule(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
+                new Rule(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
+                new Rule(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
+                new Rule(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
+                new Rule(new string[] { "یش", "ێک","" }),
+                new Rule(new string[] { "وە", "ووە","" }),
+                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
+            };
+
+            var patterns = new List<Pattern>
+            {
+                new Pattern("دوور{0}"),
+                new Pattern("مامۆستا{4}{0}{5}")
+            };
+
+            var spellChecker = new SpellChecker(patterns, rules);
+
+            var actual = spellChecker.Check(word);
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
         [InlineData("dexm", "dexom")]
         [InlineData("dekrim", "dekrrim")]
         [InlineData("spastandekeyn", "supastandekeyn")]
