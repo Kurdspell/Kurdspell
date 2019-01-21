@@ -105,5 +105,10 @@
       <Name>Kurdspell</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ckb-IQ.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

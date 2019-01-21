@@ -9,6 +9,14 @@ namespace Kurdspell
 {
     public class SpellChecker
     {
+        private enum ParseSection
+        {
+            None,
+            Information,
+            Rules,
+            Patterns,
+        }
+
         private readonly List<Pattern> _patterns;
         private readonly List<Rule> _rules;
         private readonly Dictionary<char, List<Pattern>> _dictionary;
@@ -32,8 +40,72 @@ namespace Kurdspell
 
         public SpellChecker(string dictionaryPath)
         {
-            _patterns = PatternsRepository.GetPatterns();
-            _rules = PatternsRepository.GetRules();
+            _patterns = new List<Pattern>();
+            _rules = new List<Rule>();
+
+            var rules = new List<Tuple<int, Rule>>();
+
+            using (var stream = File.OpenRead(dictionaryPath))
+            using (var reader = new StreamReader(stream, Encoding.Unicode, true))
+            {
+                var section = ParseSection.None;
+
+                while (!reader.EndOfStream)
+                {
+                    var current = reader.ReadLine();
+                    if (current.StartsWith("~"))
+                    {
+                        var index = 1;
+                        while (index > current.Length)
+                        {
+                            index++;
+
+                            if (current[index] != ' ')
+                                break;
+                        }
+
+                        var sectionName = current.Substring(index);
+                        switch (sectionName.Trim().ToLowerInvariant())
+                        {
+                            case "information":
+                                section = ParseSection.Information;
+                                break;
+                            case "rules":
+                                section = ParseSection.Rules;
+                                break;
+                            case "patterns":
+                                section = ParseSection.Patterns;
+                                break;
+
+                        }
+                    }
+                    else
+                    {
+                        switch (section)
+                        {
+                            case ParseSection.Information:
+                                // Ignore for now
+                                break;
+                            case ParseSection.Rules:
+                                var parts = current.Split(':');
+                                if (parts.Length == 2 && int.TryParse(parts[0], out var number))
+                                {
+                                    var variants = parts[1].Split(',').Select(v => v.Trim()).ToArray();
+                                    rules.Add(new Tuple<int, Rule>(number, new Rule(variants)));
+                                }
+
+                                break;
+                            case ParseSection.Patterns:
+                                // TODO: Make sure all of the rules are loaded before the patterns
+                                _patterns.Add(new Pattern(current));
+                                break;
+                        }
+                    }
+                }
+            }
+
+            _rules = rules.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
+
             _dictionary = new Dictionary<char, List<Pattern>>();
 
             foreach (var pattern in _patterns)
