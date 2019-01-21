@@ -23,13 +23,15 @@ namespace Kurdspell
         {
             return new List<Rule>
             {
-                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان" }),
-                new Rule(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
-                new Rule(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
-                new Rule(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
-                new Rule(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
-                new Rule(new string[] { "یش", "" }),
-                 new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
+                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }), //0 
+                new Rule(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }), //1
+                new Rule(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }), //2 
+                new Rule(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }), //3
+                new Rule(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }), //4 
+                new Rule(new string[] { "یش", "ێک","" }), //5
+                new Rule(new string[] { "وە", "ووە","" }), //6 
+                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }), //7
+                new Rule(new string[] { "نە", "" }), //8
             };
         }
 
@@ -42,11 +44,16 @@ namespace Kurdspell
                 new Pattern("دەکڕ{3}"),
                 new Pattern("دەچ{3}"),
                 new Pattern("مامۆستا{4}{0}{5}"),
-
+                new Pattern("ناو{0}"),
+                new Pattern("هیچ{0}"),
                 new Pattern("دارا{6}"),
                 new Pattern("دوو"),
+                new Pattern("هیچ"),
+                new Pattern("من{0}"),
+                new Pattern("شت{5}{0}"),
+                new Pattern("نەکرد{6}"),
                 new Pattern("دار{4}{6}{5}"),
-                new Pattern("دیت"),
+                new Pattern("دیت{0}"),
                 new Pattern("دوور{6}"),
                 new Pattern("ئۆی"),
                 new Pattern("دادە{6}"),
