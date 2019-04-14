@@ -21,7 +21,10 @@ namespace Kurdspell2
                 new Rule(new string[] { "m", "yn", "at", "an", "an", "an" }),
             };
 
-            return File.ReadAllLines(path).Select(l => new Pattern(l, rules)).ToList();
+            return File.ReadAllLines(path)
+                       .Where(l => !string.IsNullOrWhiteSpace(l))
+                       .Select(l => new Pattern(l, rules))
+                       .ToList();
         }
 
         private static readonly Random _random = new Random(42);

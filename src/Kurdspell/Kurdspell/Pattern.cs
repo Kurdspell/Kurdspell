@@ -56,7 +56,7 @@ namespace Kurdspell
 
             Parts = parts;
 
-            _firstChar = Template[0];
+            _firstChar = Template.Length >= 1 ? Template[0] : '\0';
             _secondChar = Template.Length >= 2 ? Template[1] : '\0';
             _thirdChar = Template.Length >= 3 ? Template[2] : '\0';
             _fourthChar = Template.Length >= 4 ? Template[3] : '\0';

@@ -169,7 +169,7 @@ namespace Sample3
 
         private SpellCheckerVM CreateSpellCheker()
         {
-            checker = new SpellCheckerVM(new SpellChecker("ckb-IQ.txt"), this);
+            checker = new SpellCheckerVM(new SpellChecker(PatternsRepository.GetPatterns(), PatternsRepository.GetRules()), this);
             checker.LoadCustomDictionary();
             return checker;
         }

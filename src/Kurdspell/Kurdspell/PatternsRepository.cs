@@ -79,10 +79,10 @@ namespace Kurdspell
                 new Pattern("Mamosta{4}{0}{5}"),
             };
 
-            //for (int i = 0; i < 100_000; i++)
-            //{
-            //    list.Add(new Pattern(GetRandomPattern(5)));
-            //}
+            for (int i = 0; i < 100_000; i++)
+            {
+                list.Add(new Pattern(GetRandomPattern(5)));
+            }
 
             return list;
         }

@@ -110,6 +110,9 @@ namespace Kurdspell
 
             foreach (var pattern in _patterns)
             {
+                if (string.IsNullOrWhiteSpace(pattern.Template))
+                    continue;
+
                 if (!_dictionary.ContainsKey(pattern.Template[0]))
                 {
                     _dictionary[pattern.Template[0]] = new List<Pattern>();
