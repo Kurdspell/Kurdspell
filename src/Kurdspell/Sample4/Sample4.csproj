@@ -6,13 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ckb-IQ.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="ckb-IQ.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="..\Sample3\ckb-IQ.txt" Link="ckb-IQ.txt" />
   </ItemGroup>
 
   <ItemGroup>
