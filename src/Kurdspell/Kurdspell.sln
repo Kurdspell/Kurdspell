@@ -13,7 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kurdspell.Tests", "Kurdspel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample3", "Sample3\Sample3.csproj", "{305BA3E2-87BF-4B03-9854-6BEA6D088FFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample4", "Sample4\Sample4.csproj", "{2EB002D5-F564-449E-A570-2E73E02D974D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample4", "Sample4\Sample4.csproj", "{2EB002D5-F564-449E-A570-2E73E02D974D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryEditor", "DictionaryEditor\DictionaryEditor.csproj", "{BA939F4E-2EC5-4DB8-952D-F38C68982C2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluation", "Evaluation\Evaluation.csproj", "{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{2EB002D5-F564-449E-A570-2E73E02D974D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2EB002D5-F564-449E-A570-2E73E02D974D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2EB002D5-F564-449E-A570-2E73E02D974D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA939F4E-2EC5-4DB8-952D-F38C68982C2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA939F4E-2EC5-4DB8-952D-F38C68982C2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA939F4E-2EC5-4DB8-952D-F38C68982C2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA939F4E-2EC5-4DB8-952D-F38C68982C2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
