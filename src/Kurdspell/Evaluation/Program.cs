@@ -13,16 +13,29 @@ namespace Evaluation
         static void Main(string[] args)
         {
             var spellChecker = new SpellChecker("ckb-IQ.txt");
-            var lines = File.ReadAllLines("test-1.txt");
 
             var entries = new List<Entry>();
 
-            foreach (var line in lines)
+            var words = spellChecker.GetWordList().ToList();
+
+            for (int i = 0; i < words.Count; i++)
             {
-                var parts = line.Split(':');
+                var word = words[i];
                 var entry = new Entry();
-                entry.Correct = parts[0];
-                entry.Misspellings = parts[1].Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                entry.Correct = word;
+
+                for (int m = 0; m < 3; m++)
+                {
+                    var misspelled = Misspell(word);
+                    if (entry.Misspellings.Contains(misspelled))
+                    {
+                        m--;
+                        continue;
+                    }
+
+                    entry.Misspellings.Add(misspelled);
+                }
+
                 entries.Add(entry);
             }
 
@@ -31,6 +44,7 @@ namespace Evaluation
             double correct5 = 0;
             double total = 0;
 
+            int count = 0;
             foreach (var entry in entries)
             {
                 foreach (var misspelling in entry.Misspellings)
@@ -45,17 +59,46 @@ namespace Evaluation
                     if (suggestions.Take(5).Any(s => s == entry.Correct))
                         correct5++;
                 }
+
+                count++;
+                if (count % 100 == 0)
+                    Console.WriteLine(count);
             }
 
             Console.WriteLine($"Correct1: {correct / total * 100:N2}% of {total:N0} words.");
             Console.WriteLine($"Correct3: {correct3 / total * 100:N2}% of {total:N0} words.");
             Console.WriteLine($"Correct5: {correct5 / total * 100:N2}% of {total:N0} words.");
+            Console.ReadLine();
+        }
+
+        private readonly static Random _random = new Random();
+        private readonly static string _alphabet = "قوەرتیئحۆپاسدفگهژکلزخجڤبنمممڕشڵچ";
+        private static string Misspell(string word)
+        {
+            var index = _random.Next(word.Length - 1) + 1;
+            var randomLetter = _alphabet[_random.Next(_alphabet.Length)];
+
+            var operation = _random.Next(3);
+            if (operation == 0) // insert
+            {
+                return word.Insert(index, randomLetter.ToString());
+            }
+            else if (operation == 1) // delete
+            {
+                return word.Remove(index, 1);
+            }
+            else // replace
+            {
+                var builder = new StringBuilder(word);
+                builder[index] = randomLetter;
+                return builder.ToString();
+            }
         }
     }
 
     class Entry
     {
         public string Correct { get; set; }
-        public string[] Misspellings { get; set; }
+        public HashSet<string> Misspellings { get; set; } = new HashSet<string>();
     }
 }
