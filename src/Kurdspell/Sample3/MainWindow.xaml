@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sample3"
         mc:Ignorable="d"
-        Title="Kurdspell Demo" Height="450" Width="800">
+        Title="SpellChecker Demo" Height="450" Width="800">
 
     <Grid>
         <local:SpellTextBox FlowDirection="RightToLeft" IsSpellCheckEnabled="True" FontSize="32" x:Name="spellTextBox" AcceptsReturn="True" />

@@ -101,6 +101,23 @@ namespace Sample3
                 mi.Command = item.Command;
                 this.ContextMenu.Items.Add(mi);
             }
+
+            if (Checker.SelectedMisspelledWord != null)
+            {
+                ContextMenu.Items.Add(new Separator());
+
+                ContextMenu.Items.Add(new MenuItem
+                {
+                    Header = "Add to dictionary",
+                    Command = new DelegateCommand(o =>
+                    {
+
+                        Checker.AddToDictionary(Checker.SelectedMisspelledWord.Text);
+                        Checker.CheckSpelling(this.Text);
+                        RaiseSpellcheckCompletedEvent();
+                    }),
+                });
+            }
         }
 
         public static readonly DependencyProperty DictionaryPathProperty =

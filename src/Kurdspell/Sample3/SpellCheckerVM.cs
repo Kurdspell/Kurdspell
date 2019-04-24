@@ -15,7 +15,7 @@ namespace Sample3
     public class SpellCheckerVM : INotifyPropertyChanged
     {
         private SpellTextBox _box;
-        private SpellChecker _kurdspell;
+        private SpellChecker _spellChecker;
         private List<Word> _words;
         private ObservableCollection<Word> _misspelledWords;
         private ObservableCollection<Word> _suggestedWords;
@@ -25,7 +25,7 @@ namespace Sample3
 
         public SpellCheckerVM(SpellChecker kurdspell, SpellTextBox parent)
         {
-            _kurdspell = kurdspell;
+            _spellChecker = kurdspell;
             _box = parent;
             Words = new List<Word>();
             MisspelledWords = new ObservableCollection<Word>();
@@ -46,6 +46,11 @@ namespace Sample3
                 _words = value;
                 OnPropertyChanged("Words");
             }
+        }
+
+        public void AddToDictionary(string word)
+        {
+            _spellChecker.AddToDictionary(word);
         }
 
         public ObservableCollection<Word> MisspelledWords
@@ -158,7 +163,7 @@ namespace Sample3
         {
             if (misspelledWord != null)
             {
-                SuggestedWords = new ObservableCollection<Word>(_kurdspell.Suggest(misspelledWord.Text, 5).Select(s => new Word(s, misspelledWord.Index)));
+                SuggestedWords = new ObservableCollection<Word>(_spellChecker.Suggest(misspelledWord.Text, 5).Select(s => new Word(s, misspelledWord.Index)));
                 if (SuggestedWords.Count == 0) SuggestedWords = new ObservableCollection<Word> { new Word("No suggestions", 0) };
             }
             else
@@ -192,7 +197,7 @@ namespace Sample3
                     bool isIgnored = IgnoredWords.Contains(word);
                     if (!isIgnored)
                     {
-                        bool exists = _kurdspell.Check(word.Text);
+                        bool exists = _spellChecker.Check(word.Text);
                         if (exists)
                             IgnoredWords.Add(word);
                         else

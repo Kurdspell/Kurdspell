@@ -29,13 +29,18 @@ namespace Kurdspell
 
             foreach (var pattern in _patterns)
             {
-                if (!_dictionary.ContainsKey(pattern.Template[0]))
-                {
-                    _dictionary[pattern.Template[0]] = new List<Pattern>();
-                }
-
-                _dictionary[pattern.Template[0]].Add(pattern);
+                AddPattern(pattern);
             }
+        }
+
+        private void AddPattern(Pattern pattern)
+        {
+            if (!_dictionary.ContainsKey(pattern.Template[0]))
+            {
+                _dictionary[pattern.Template[0]] = new List<Pattern>();
+            }
+
+            _dictionary[pattern.Template[0]].Add(pattern);
         }
 
         public SpellChecker(string dictionaryPath)
@@ -170,6 +175,13 @@ namespace Kurdspell
             }
 
             return new List<string>();
+        }
+
+        public void AddToDictionary(string word)
+        {
+            var pattern = new Pattern(word);
+            _patterns.Add(pattern);
+            AddPattern(pattern);
         }
     }
 }
