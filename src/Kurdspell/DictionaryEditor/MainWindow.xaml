@@ -6,7 +6,18 @@
         xmlns:local="clr-namespace:DictionaryEditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <DockPanel LastChildFill="True">
+        <Menu x:Name="mainMenu" DockPanel.Dock="Top">
+            <MenuItem x:Name="fileMenuItem" Header="_File">
+                <MenuItem x:Name="openDictionaryMenuItem" Header="_Open Dictionary" Click="OpenDictionaryMenuItem_Click" />
+            </MenuItem>
+
+            <MenuItem x:Name="viewMenuItem" Header="_View">
+                <MenuItem x:Name="rtlDictionaryMenuItem" IsCheckable="True" IsChecked="True" Header="_Right To Left" Click="RtlDictionaryMenuItem_Click" />
+                <MenuItem x:Name="ltrDictionaryMenuItem" IsCheckable="True" Header="_Left To Right" Click="LtrDictionaryMenuItem_Click" />
+            </MenuItem>
+        </Menu>
+
+        <ContentControl x:Name="mainContent" FlowDirection="RightToLeft" />
+    </DockPanel>
 </Window>

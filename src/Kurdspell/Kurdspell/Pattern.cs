@@ -249,6 +249,11 @@ namespace Kurdspell
             return charIndex == wLength;
         }
 
+        public IEnumerable<string> GetVariants(IReadOnlyList<Rule> rules)
+        {
+            return Explode(rules).Select(parts => string.Join("", parts));
+        }
+
         private static bool CanBeTheSame(string variant, int vLength, string text, int tLength, int charIndex)
         {
             if (charIndex + vLength > tLength)

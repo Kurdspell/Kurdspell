@@ -127,9 +127,13 @@ namespace Kurdspell
             }
         }
 
+        public IReadOnlyList<Pattern> GetPatterns() => _patterns;
+
+        public IReadOnlyList<Rule> GetRules() => _rules;
+
         public IEnumerable<string> GetWordList()
         {
-            return _patterns.SelectMany(p => p.Explode(_rules).Select(parts => string.Join("", parts)));
+            return _patterns.SelectMany(p => p.GetVariants(_rules));
         }
 
         public bool Check(string word)
