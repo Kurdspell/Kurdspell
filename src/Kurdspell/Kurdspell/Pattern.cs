@@ -351,7 +351,7 @@ namespace Kurdspell
             return true;
         }
 
-        public IEnumerable<IEnumerable<string>> Expand(IReadOnlyList<Rule> rules)
+        public IEnumerable<IEnumerable<string>> Explode(IReadOnlyList<Rule> rules)
         {
             var sets = new List<IEnumerable<string>>();
             for (int i = 0; i < Parts.Count; i++)
@@ -372,7 +372,7 @@ namespace Kurdspell
             return CartesianProduct.Linq(sets).ToArray();
         }
 
-        private List<string> Expand(string prefix, IReadOnlyList<object> parts, IReadOnlyList<Rule> rules)
+        private List<string> Explode(string prefix, IReadOnlyList<object> parts, IReadOnlyList<Rule> rules)
         {
             var list = new List<string>();
 
@@ -390,7 +390,7 @@ namespace Kurdspell
                         if (i < parts.Count - 1)
                         {
                             var newPrefix = builder.ToString();
-                            list.AddRange(Expand(newPrefix, parts.Skip(i + 1).ToList(), rules));
+                            list.AddRange(Explode(newPrefix, parts.Skip(i + 1).ToList(), rules));
                         }
                         else
                         {
@@ -426,7 +426,7 @@ namespace Kurdspell
                 return suggestions;
 
             var setsOfVariants = closePatterns
-                    .Select(p => p.Expand(rules)
+                    .Select(p => p.Explode(rules)
                         .Select(v => string.Join(string.Empty, v))
                         .Distinct()
                         .Select(v => new

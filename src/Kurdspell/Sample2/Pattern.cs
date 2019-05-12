@@ -364,7 +364,7 @@ namespace Kurdspell2
             return true;
         }
 
-        public IEnumerable<IEnumerable<string>> Expand()
+        public IEnumerable<IEnumerable<string>> Explode()
         {
             var sets = new List<IEnumerable<string>>();
             foreach (var part in Parts)
@@ -385,7 +385,7 @@ namespace Kurdspell2
             return CartesianProduct.Linq(sets).ToArray();
         }
 
-        private List<string> Expand(string prefix, IReadOnlyList<string> parts)
+        private List<string> Explode(string prefix, IReadOnlyList<string> parts)
         {
             var list = new List<string>();
 
@@ -403,7 +403,7 @@ namespace Kurdspell2
                         if (i < parts.Count - 1)
                         {
                             var newPrefix = builder.ToString();
-                            list.AddRange(Expand(newPrefix, parts.Skip(i + 1).ToList()));
+                            list.AddRange(Explode(newPrefix, parts.Skip(i + 1).ToList()));
                         }
                         else
                         {
@@ -429,7 +429,7 @@ namespace Kurdspell2
             var suggestions = new List<string>();
 
             var suggestionLists = new List<string[]>();
-            var expanded = patterns.SelectMany(p => p.Expand()).Select(i => string.Join(string.Empty, i))
+            var expanded = patterns.SelectMany(p => p.Explode()).Select(i => string.Join(string.Empty, i))
                                                    .OrderBy(s => Levenshtein.GetDistanceTwoRows(s, word)).ToArray();
             suggestionLists.Add(expanded);
 

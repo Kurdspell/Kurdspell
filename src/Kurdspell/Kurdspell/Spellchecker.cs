@@ -129,7 +129,7 @@ namespace Kurdspell
 
         public IEnumerable<string> GetWordList()
         {
-            return _patterns.SelectMany(p => p.Expand(_rules).Select(parts => string.Join("", parts)));
+            return _patterns.SelectMany(p => p.Explode(_rules).Select(parts => string.Join("", parts)));
         }
 
         public bool Check(string word)

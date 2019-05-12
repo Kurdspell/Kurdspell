@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryEditor", "Diction
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluation", "Evaluation\Evaluation.csproj", "{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compressor", "Compressor\Compressor.csproj", "{3F1D0A19-902A-4DB9-A433-2CEBBF36E203}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F1D0A19-902A-4DB9-A433-2CEBBF36E203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F1D0A19-902A-4DB9-A433-2CEBBF36E203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F1D0A19-902A-4DB9-A433-2CEBBF36E203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F1D0A19-902A-4DB9-A433-2CEBBF36E203}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
