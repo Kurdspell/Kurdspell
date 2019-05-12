@@ -44,6 +44,7 @@ namespace Kurdspell.Tests
         [Theory]
         [InlineData("دوورمان", true)]
         [InlineData("مامۆست", false)]
+        [InlineData("دەتانیی", false)]
         public void CheckSpellingKurdish(string word, bool expected)
         {
             var rules = new List<Rule>
@@ -61,7 +62,8 @@ namespace Kurdspell.Tests
             var patterns = new List<Pattern>
             {
                 new Pattern("دوور{0}"),
-                new Pattern("مامۆستا{4}{0}{5}")
+                new Pattern("مامۆستا{4}{0}{5}"),
+                new Pattern("دە{7}تانی")
             };
 
             var spellChecker = new SpellChecker(patterns, rules);
