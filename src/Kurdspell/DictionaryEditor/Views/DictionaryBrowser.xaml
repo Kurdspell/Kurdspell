@@ -12,12 +12,27 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <ListView x:Name="patternsList"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="filterPatternsList" TextChanged="FilterPatternsList_TextChanged" />
+
+        <ListView x:Name="patternsList" Grid.Row="1"
                   SelectionChanged="PatternsList_SelectionChanged">
         </ListView>
 
-        <ListView x:Name="variantsList" Grid.Column="1">
+        <TextBlock Grid.Row="2" Text="{Binding ElementName=patternsList, Path=Items.Count, StringFormat='N0'}" />
+
+        <TextBox x:Name="filterVariantsList" Grid.Column="1" TextChanged="FilterVariantsList_TextChanged" />
+        
+        <ListView x:Name="variantsList" Grid.Row="1" Grid.Column="1">
             
         </ListView>
+
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ElementName=variantsList, Path=Items.Count, StringFormat='N0'}" />
+
     </Grid>
 </UserControl>

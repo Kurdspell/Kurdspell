@@ -249,6 +249,16 @@ namespace Kurdspell
             return charIndex == wLength;
         }
 
+        public bool IsExactly(string word, IReadOnlyList<Rule> rules)
+        {
+            var secondChar = word.Length > 1 ? word[1] : '\0';
+            var thirdChar = word.Length > 2 ? word[2] : '\0';
+            var fourthChar = word.Length > 3 ? word[3] : '\0';
+            var fifthChar = word.Length > 4 ? word[4] : '\0';
+
+            return IsExactly(word, word.Length, secondChar, thirdChar, fourthChar, fifthChar, rules);
+        }
+
         public IEnumerable<string> GetVariants(IReadOnlyList<Rule> rules)
         {
             return Explode(rules).Select(parts => string.Join("", parts));
