@@ -58,8 +58,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Views\DictionaryBrowser.xaml.cs">
-      <DependentUpon>DictionaryBrowser.xaml</DependentUpon>
+    <Compile Include="Helpers\Mvvm.cs" />
+    <Compile Include="ViewModels\DictionaryEditorViewModel.cs" />
+    <Compile Include="ViewModels\PatternViewModel.cs" />
+    <Compile Include="Views\DictionaryEditor.xaml.cs">
+      <DependentUpon>DictionaryEditor.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -73,7 +76,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\DictionaryBrowser.xaml">
+    <Page Include="Views\DictionaryEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

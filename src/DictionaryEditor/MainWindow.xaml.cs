@@ -88,7 +88,7 @@ namespace DictionaryEditor
             try
             {
                 _spellChecker = await SpellChecker.FromFileAsync(path);
-                mainContent.Content = new DictionaryBrowser(_spellChecker);
+                mainContent.Content = new Views.DictionaryEditor(_spellChecker);
             }
             catch (Exception ex)
             {

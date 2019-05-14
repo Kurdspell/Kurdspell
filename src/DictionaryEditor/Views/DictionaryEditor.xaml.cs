@@ -1,6 +1,8 @@
-﻿using Kurdspell;
+﻿using DictionaryEditor.ViewModels;
+using Kurdspell;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,26 +19,17 @@ using System.Windows.Shapes;
 namespace DictionaryEditor.Views
 {
     /// <summary>
-    /// Interaction logic for DictionaryBrowser.xaml
+    /// Interaction logic for DictionaryEditor.xaml
     /// </summary>
-    public partial class DictionaryBrowser : UserControl
+    public partial class DictionaryEditor : UserControl
     {
-        private readonly SpellChecker _spellChecker;
+        private readonly DictionaryEditorViewModel _viewModel;
 
-        public DictionaryBrowser(SpellChecker spellChecker)
+        public DictionaryEditor(SpellChecker spellChecker)
         {
             InitializeComponent();
-            _spellChecker = spellChecker;
-            patternsList.ItemsSource = _spellChecker.GetPatterns();
+            DataContext = _viewModel = new DictionaryEditorViewModel(spellChecker);
             FilterByTextBox(patternsList, filterPatternsList);
-        }
-
-        private void PatternsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (patternsList.SelectedItem == null) return;
-            var selectedItem = (Pattern)patternsList.SelectedItem;
-            variantsList.ItemsSource = selectedItem.GetVariants(_spellChecker.GetAffixes());
-            FilterByTextBox(variantsList, filterVariantsList);
         }
 
         private void FilterPatternsList_TextChanged(object sender, TextChangedEventArgs e)
@@ -56,7 +49,7 @@ namespace DictionaryEditor.Views
 
             collectionView.Filter = o =>
             {
-                string template = o is Pattern ? ((Pattern)o).Template : o as string;
+                string template = o is PatternViewModel ? ((PatternViewModel)o).Template : o as string;
                 if (string.IsNullOrWhiteSpace(textBox.Text))
                 {
                     return true;
