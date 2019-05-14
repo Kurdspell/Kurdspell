@@ -18,20 +18,20 @@ namespace Compresser
                     Frequency = int.Parse(parts[1])
                 }).ToList();
 
-            var affixGroups = File.ReadAllLines("rules.txt").Select(w => w.Split(',')).ToList();
-            var cleanRules = affixGroups.Select(r =>
+            var affixGroups = File.ReadAllLines("affixes.txt").Select(w => w.Split(',')).ToList();
+            var cleanAffixes = affixGroups.Select(r =>
                 r.Where(c => !string.IsNullOrWhiteSpace(c))
                  .Select(i => i.Trim())
                  .ToList()
             ).ToList();
 
-            var affixes = cleanRules.SelectMany(r => r)
+            var affixes = cleanAffixes.SelectMany(r => r)
                                     .Where(r => r.Length > 1)
                                     .OrderByDescending(r => r.Length)
                                     .Distinct()
                                     .ToList();
 
-            var ruleRules = affixGroups.Select((items, i) => new Rule(items)).ToList();
+            var acutalAffixes = affixGroups.Select((items, i) => new Affix(items)).ToList();
 
             foreach (var word in words)
             {
@@ -146,7 +146,7 @@ namespace Compresser
                     int count = 0;
                     foreach (var variant in variants)
                     {
-                        if (pattern.IsExactly(variant.Text, ruleRules))
+                        if (pattern.IsExactly(variant.Text, acutalAffixes))
                             count++;
                     }
 

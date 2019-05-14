@@ -35,7 +35,7 @@ namespace DictionaryEditor.Views
         {
             if (patternsList.SelectedItem == null) return;
             var selectedItem = (Pattern)patternsList.SelectedItem;
-            variantsList.ItemsSource = selectedItem.GetVariants(_spellChecker.GetRules());
+            variantsList.ItemsSource = selectedItem.GetVariants(_spellChecker.GetAffixes());
             FilterByTextBox(variantsList, filterVariantsList);
         }
 

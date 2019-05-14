@@ -6,32 +6,32 @@ namespace Kurdspell
 {
     public class PatternsRepository
     {
-        public static List<Rule> GetRules()
+        public static List<Affix> GetAffixes()
         {
-            return new List<Rule>
+            return new List<Affix>
             {
-                new Rule(new string[] { "m", "man", "t", "tan", "y", "yan" }),
-                new Rule(new string[] { "m", "in", "a", "n", "et", "n" }),
-                new Rule(new string[] { "om", "oyn", "oyt", "on", "wat", "on" }),
-                new Rule(new string[] { "m", "in", "t", "n", "et", "n" }),
-                new Rule(new string[] { "yaka", "yek", "yakan", "yan", "" }),
-                new Rule(new string[] { "ish", "" }),
+                new Affix(new string[] { "m", "man", "t", "tan", "y", "yan" }),
+                new Affix(new string[] { "m", "in", "a", "n", "et", "n" }),
+                new Affix(new string[] { "om", "oyn", "oyt", "on", "wat", "on" }),
+                new Affix(new string[] { "m", "in", "t", "n", "et", "n" }),
+                new Affix(new string[] { "yaka", "yek", "yakan", "yan", "" }),
+                new Affix(new string[] { "ish", "" }),
             };
         }
 
-        public static List<Rule> GetKurdishRules()
+        public static List<Affix> GetKurdishAffixes()
         {
-            return new List<Rule>
+            return new List<Affix>
             {
-                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }), //0 
-                new Rule(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }), //1
-                new Rule(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }), //2 
-                new Rule(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }), //3
-                new Rule(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }), //4 
-                new Rule(new string[] { "یش", "ێک","" }), //5
-                new Rule(new string[] { "وە", "ووە","" }), //6 
-                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }), //7
-                new Rule(new string[] { "نە", "" }), //8
+                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }), //0 
+                new Affix(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }), //1
+                new Affix(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }), //2 
+                new Affix(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }), //3
+                new Affix(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }), //4 
+                new Affix(new string[] { "یش", "ێک","" }), //5
+                new Affix(new string[] { "وە", "ووە","" }), //6 
+                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }), //7
+                new Affix(new string[] { "نە", "" }), //8
             };
         }
 
@@ -88,7 +88,7 @@ namespace Kurdspell
         }
 
         private static readonly Random _random = new Random(42);
-        private static string GetRandomPattern(int maxRule)
+        private static string GetRandomPattern(int maxAffix)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             var length = _random.Next(5, 12);
@@ -111,8 +111,8 @@ namespace Kurdspell
                 }
                 while (word[GetPreviousOrFirst(index)] == '{' || word[GetPreviousOrFirst(index)] == '}' || char.IsNumber(word[GetPreviousOrFirst(index)]));
 
-                var rule = _random.Next(0, maxRule + 1);
-                word = word.Substring(0, GetPreviousOrFirst(index)) + "{" + rule + "}" + word.Substring(index + 1, word.Length - index - 1);
+                var affix = _random.Next(0, maxAffix + 1);
+                word = word.Substring(0, GetPreviousOrFirst(index)) + "{" + affix + "}" + word.Substring(index + 1, word.Length - index - 1);
             }
 
             return word;

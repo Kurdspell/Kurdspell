@@ -21,7 +21,7 @@ namespace Sample
 
         static Benchmarks()
         {
-            _kurdspell = new SpellChecker(PatternsRepository.GetPatterns(), PatternsRepository.GetRules());
+            _kurdspell = new SpellChecker(PatternsRepository.GetPatterns(), PatternsRepository.GetAffixes());
         }
 
         [Benchmark]
@@ -45,7 +45,7 @@ namespace Sample
         [Benchmark]
         public void Construct()
         {
-            var kurdspell = new SpellChecker(PatternsRepository.GetPatterns(), PatternsRepository.GetRules());
+            var kurdspell = new SpellChecker(PatternsRepository.GetPatterns(), PatternsRepository.GetAffixes());
         }
     }
 }

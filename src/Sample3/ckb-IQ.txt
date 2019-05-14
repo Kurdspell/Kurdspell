@@ -4,7 +4,7 @@ LanguageNativeName: کوردی ناوەندی
 LanguageCode: ckb-IQ
 Direction: RTL
 
-~ Rules
+~ Affixes
 0 : م,مان,ت,تان,ی,یان,ە,
 1 : م,ین,ە,ن,ێت,ن,
 2 : ۆم,ۆین,ۆیت,ۆن,وات,ۆن,

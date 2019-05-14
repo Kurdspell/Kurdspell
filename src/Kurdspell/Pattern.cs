@@ -39,7 +39,7 @@ namespace Kurdspell
                     var text = Template.Substring(start, index - start + 1);
                     if (!int.TryParse(text.Substring(1, text.Length - 2), out var number))
                     {
-                        throw new ArgumentException("Rule names must be numbers");
+                        throw new ArgumentException("Affix names must be numbers");
                     }
 
                     parts.Add(number);
@@ -76,7 +76,7 @@ namespace Kurdspell
         private readonly char _fifthChar;
         private readonly byte _length;
 
-        public bool IsExactly(string word, int wLength, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyList<Rule> rules, int partIndex = 1, int charIndex = 0)
+        public bool IsExactly(string word, int wLength, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyList<Affix> affixes, int partIndex = 1, int charIndex = 0)
         {
             if (charIndex == 0)
             {
@@ -184,14 +184,14 @@ namespace Kurdspell
             {
                 var p = Parts[partIndex];
 
-                if (p is int rule)
+                if (p is int affix)
                 {
                     if (matches == null)
                         matches = new List<int>();
                     else
                         matches.Clear();
 
-                    var variants = rules[rule].Values;
+                    var variants = affixes[affix].Values;
                     var shouldGoOn = false;
 
                     int goodLength = 0;
@@ -214,7 +214,7 @@ namespace Kurdspell
                         shouldGoOn = false;
                         foreach (var match in matches)
                         {
-                            shouldGoOn = IsExactly(word, wLength, wSecondChar, wThirdChar, wFourthChar, wFifthChar, rules, partIndex + 1, charIndex + variants[match].Length);
+                            shouldGoOn = IsExactly(word, wLength, wSecondChar, wThirdChar, wFourthChar, wFifthChar, affixes, partIndex + 1, charIndex + variants[match].Length);
 
                             if (shouldGoOn)
                                 return true;
@@ -249,19 +249,19 @@ namespace Kurdspell
             return charIndex == wLength;
         }
 
-        public bool IsExactly(string word, IReadOnlyList<Rule> rules)
+        public bool IsExactly(string word, IReadOnlyList<Affix> affixes)
         {
             var secondChar = word.Length > 1 ? word[1] : '\0';
             var thirdChar = word.Length > 2 ? word[2] : '\0';
             var fourthChar = word.Length > 3 ? word[3] : '\0';
             var fifthChar = word.Length > 4 ? word[4] : '\0';
 
-            return IsExactly(word, word.Length, secondChar, thirdChar, fourthChar, fifthChar, rules);
+            return IsExactly(word, word.Length, secondChar, thirdChar, fourthChar, fifthChar, affixes);
         }
 
-        public IEnumerable<string> GetVariants(IReadOnlyList<Rule> rules)
+        public IEnumerable<string> GetVariants(IReadOnlyList<Affix> affixes)
         {
-            return Explode(rules).Select(parts => string.Join("", parts));
+            return Explode(affixes).Select(parts => string.Join("", parts));
         }
 
         private static bool CanBeTheSame(string variant, int vLength, string text, int tLength, int charIndex)
@@ -292,7 +292,7 @@ namespace Kurdspell
             return true;
         }
 
-        public bool IsCloseEnough(string word, IReadOnlyList<Rule> rules, StringBuilder builder = null, int i = 0)
+        public bool IsCloseEnough(string word, IReadOnlyList<Affix> affixes, StringBuilder builder = null, int i = 0)
         {
             builder = builder ?? new StringBuilder(word.Length);
             var matches = new List<int>(10);
@@ -301,11 +301,11 @@ namespace Kurdspell
             {
                 var p = Parts[i];
 
-                if (p is int rule)
+                if (p is int affix)
                 {
                     matches.Clear();
 
-                    var variants = rules[rule].Values;
+                    var variants = affixes[affix].Values;
                     var shouldGoOn = false;
 
                     for (int j = 0; j < variants.Length; j++)
@@ -332,7 +332,7 @@ namespace Kurdspell
                             var originalLength = builder.Length;
                             builder.Append(variants[match]);
 
-                            shouldGoOn = IsCloseEnough(word, rules, builder, i + 1);
+                            shouldGoOn = IsCloseEnough(word, affixes, builder, i + 1);
                             builder.Remove(originalLength, builder.Length - originalLength);
 
                             if (shouldGoOn)
@@ -366,15 +366,15 @@ namespace Kurdspell
             return true;
         }
 
-        public IEnumerable<IEnumerable<string>> Explode(IReadOnlyList<Rule> rules)
+        public IEnumerable<IEnumerable<string>> Explode(IReadOnlyList<Affix> affixes)
         {
             var sets = new List<IEnumerable<string>>();
             for (int i = 0; i < Parts.Count; i++)
             {
                 IEnumerable<string> set;
-                if (Parts[i] is int rule)
+                if (Parts[i] is int affix)
                 {
-                    set = rules[rule].Values;
+                    set = affixes[affix].Values;
                 }
                 else
                 {
@@ -387,7 +387,7 @@ namespace Kurdspell
             return CartesianProduct.Linq(sets).ToArray();
         }
 
-        private List<string> Explode(string prefix, IReadOnlyList<object> parts, IReadOnlyList<Rule> rules)
+        private List<string> Explode(string prefix, IReadOnlyList<object> parts, IReadOnlyList<Affix> affixes)
         {
             var list = new List<string>();
 
@@ -395,9 +395,9 @@ namespace Kurdspell
 
             for (int i = 0; i < parts.Count; i++)
             {
-                if (parts[i] is int rule)
+                if (parts[i] is int affix)
                 {
-                    var values = rules[rule].Values;
+                    var values = affixes[affix].Values;
                     foreach (var value in values)
                     {
                         builder.Append(value);
@@ -405,7 +405,7 @@ namespace Kurdspell
                         if (i < parts.Count - 1)
                         {
                             var newPrefix = builder.ToString();
-                            list.AddRange(Explode(newPrefix, parts.Skip(i + 1).ToList(), rules));
+                            list.AddRange(Explode(newPrefix, parts.Skip(i + 1).ToList(), affixes));
                         }
                         else
                         {
@@ -424,12 +424,12 @@ namespace Kurdspell
             return list;
         }
 
-        public static List<string> GetTop(IReadOnlyList<Pattern> patterns, string word, int n, IReadOnlyList<Rule> rules)
+        public static List<string> GetTop(IReadOnlyList<Pattern> patterns, string word, int n, IReadOnlyList<Affix> affixes)
         {
             ConcurrentBag<Pattern> closePatterns = new ConcurrentBag<Pattern>();
             Parallel.For(0, patterns.Count, i =>
             {
-                if (patterns[i].IsCloseEnough(word, rules))
+                if (patterns[i].IsCloseEnough(word, affixes))
                 {
                     closePatterns.Add(patterns[i]);
                 }
@@ -441,7 +441,7 @@ namespace Kurdspell
                 return suggestions;
 
             var setsOfVariants = closePatterns
-                    .Select(p => p.Explode(rules)
+                    .Select(p => p.Explode(affixes)
                         .Select(v => string.Join(string.Empty, v))
                         .Distinct()
                         .Select(v => new
@@ -467,9 +467,9 @@ namespace Kurdspell
         public override string ToString() => Template;
     }
 
-    public struct Rule
+    public struct Affix
     {
-        public Rule(params string[] values) : this()
+        public Affix(params string[] values) : this()
         {
             Values = values;
         }

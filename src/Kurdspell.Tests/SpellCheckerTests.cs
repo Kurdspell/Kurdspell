@@ -17,14 +17,14 @@ namespace Kurdspell.Tests
         [InlineData("mamostaaa", false)]
         public void CheckSpelling(string word, bool expected)
         {
-            var rules = new List<Rule>
+            var affixes = new List<Affix>
             {
-                new Rule("om", "oyn", "oyt", "on", "wat", "on"),
-                new Rule("im", "in", "it", "n", "et", "n"),
-                new Rule("m", "man", "t", "tan", "y", "yan"),
-                new Rule("em", "eyn", "eyt", "en", "at", "en"),
-                new Rule(new string[] { "m", "in", "a", "n", "et", "n" }),
-                new Rule(new string[] { "ish", "" }),
+                new Affix("om", "oyn", "oyt", "on", "wat", "on"),
+                new Affix("im", "in", "it", "n", "et", "n"),
+                new Affix("m", "man", "t", "tan", "y", "yan"),
+                new Affix("em", "eyn", "eyt", "en", "at", "en"),
+                new Affix(new string[] { "m", "in", "a", "n", "et", "n" }),
+                new Affix(new string[] { "ish", "" }),
             };
 
             var patterns = new List<Pattern>
@@ -35,7 +35,7 @@ namespace Kurdspell.Tests
                 new Pattern("m{4}{5}mos"),
             };
 
-            var spellChecker = new SpellChecker(patterns, rules);
+            var spellChecker = new SpellChecker(patterns, affixes);
 
             var actual = spellChecker.Check(word);
             Assert.Equal(expected, actual);
@@ -47,16 +47,16 @@ namespace Kurdspell.Tests
         [InlineData("دەتانیی", false)]
         public void CheckSpellingKurdish(string word, bool expected)
         {
-            var rules = new List<Rule>
+            var affixes = new List<Affix>
             {
-                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }),
-                new Rule(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
-                new Rule(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
-                new Rule(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
-                new Rule(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
-                new Rule(new string[] { "یش", "ێک","" }),
-                new Rule(new string[] { "وە", "ووە","" }),
-                new Rule(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
+                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }),
+                new Affix(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
+                new Affix(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
+                new Affix(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
+                new Affix(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
+                new Affix(new string[] { "یش", "ێک","" }),
+                new Affix(new string[] { "وە", "ووە","" }),
+                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
             };
 
             var patterns = new List<Pattern>
@@ -66,7 +66,7 @@ namespace Kurdspell.Tests
                 new Pattern("دە{7}تانی")
             };
 
-            var spellChecker = new SpellChecker(patterns, rules);
+            var spellChecker = new SpellChecker(patterns, affixes);
 
             var actual = spellChecker.Check(word);
             Assert.Equal(expected, actual);
@@ -79,12 +79,12 @@ namespace Kurdspell.Tests
         [InlineData("supastandkem", "supastandekem")]
         public void GetSuggestions(string word, string suggestion)
         {
-            var rules = new List<Rule>
+            var affixes = new List<Affix>
             {
-                new Rule("om", "oyn", "oyt", "on", "wat", "on"),
-                new Rule("im", "in", "it", "n", "et", "n"),
-                new Rule("m", "man", "t", "tan", "y", "yan"),
-                new Rule("em", "eyn", "eyt", "en", "at", "en"),
+                new Affix("om", "oyn", "oyt", "on", "wat", "on"),
+                new Affix("im", "in", "it", "n", "et", "n"),
+                new Affix("m", "man", "t", "tan", "y", "yan"),
+                new Affix("em", "eyn", "eyt", "en", "at", "en"),
             };
 
             var patterns = new List<Pattern>
@@ -94,7 +94,7 @@ namespace Kurdspell.Tests
                 new Pattern("supas{2}dek{3}"),
             };
 
-            var spellChecker = new SpellChecker(patterns, rules);
+            var spellChecker = new SpellChecker(patterns, affixes);
 
             var list = spellChecker.Suggest(word, 3);
             Assert.True(list.Count <= 3);

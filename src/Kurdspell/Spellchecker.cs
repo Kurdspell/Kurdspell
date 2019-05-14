@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Kurdspell
@@ -10,30 +9,30 @@ namespace Kurdspell
     public class SpellChecker
     {
         private const string Information = "information";
-        private const string Rules = "rules";
+        private const string Affixes = "affixes";
         private const string Patterns = "patterns";
 
         private const string SectionPrefix = "~ ";
         private const string InformationSectionName = SectionPrefix + Information;
-        private const string RulesSectionName = SectionPrefix + Rules;
+        private const string AffixesSectionName = SectionPrefix + Affixes;
         private const string PatternsSectionName = SectionPrefix + Patterns;
 
         private enum ParseSection
         {
             None,
             Information,
-            Rules,
+            Affixes,
             Patterns,
         }
 
         private readonly List<Pattern> _patterns;
-        private readonly List<Rule> _rules;
+        private readonly List<Affix> _affixes;
         private readonly Dictionary<char, List<Pattern>> _dictionary;
 
-        public SpellChecker(List<Pattern> patterns, List<Rule> rules, Dictionary<string, string> properties = null)
+        public SpellChecker(List<Pattern> patterns, List<Affix> affixes, Dictionary<string, string> properties = null)
         {
             _patterns = patterns;
-            _rules = rules;
+            _affixes = affixes;
             _dictionary = new Dictionary<char, List<Pattern>>();
             Properties = properties ?? new Dictionary<string, string>();
 
@@ -45,11 +44,11 @@ namespace Kurdspell
 
         public IReadOnlyList<Pattern> GetPatterns() => _patterns;
 
-        public IReadOnlyList<Rule> GetRules() => _rules;
+        public IReadOnlyList<Affix> GetAffixes() => _affixes;
 
         public IEnumerable<string> GetWordList()
         {
-            return _patterns.SelectMany(p => p.GetVariants(_rules));
+            return _patterns.SelectMany(p => p.GetVariants(_affixes));
         }
 
         public Dictionary<string, string> Properties { get; } = new Dictionary<string, string>();
@@ -71,7 +70,7 @@ namespace Kurdspell
 
                 Parallel.For(0, patterns.Count, (i, state) =>
                 {
-                    if (patterns[i].IsExactly(word, length, secondChar, thirdChar, fourthChar, fifthChar, _rules))
+                    if (patterns[i].IsExactly(word, length, secondChar, thirdChar, fourthChar, fifthChar, _affixes))
                     {
                         found = true;
                         state.Break();
@@ -93,7 +92,7 @@ namespace Kurdspell
 
             if (_dictionary.TryGetValue(word[0], out var patterns))
             {
-                return Pattern.GetTop(patterns, word, count, _rules);
+                return Pattern.GetTop(patterns, word, count, _affixes);
             }
 
             return new List<string>();
@@ -137,9 +136,9 @@ namespace Kurdspell
         public static async Task<SpellChecker> FromReaderAsync(TextReader reader)
         {
             var patterns = new List<Pattern>();
-            var actualRules = new List<Rule>();
+            var affixes = new List<Affix>();
 
-            var rules = new List<Tuple<int, Rule>>();
+            var affixTuples = new List<Tuple<int, Affix>>();
             var properties = new Dictionary<string, string>();
 
             var section = ParseSection.None;
@@ -147,12 +146,12 @@ namespace Kurdspell
             while (reader.Peek() != -1)
             {
                 var current = await reader.ReadLineAsync();
-                section = ParseLine(current, section, properties, rules, patterns);
+                section = ParseLine(current, section, properties, affixTuples, patterns);
             }
 
-            actualRules = rules.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
+            affixes = affixTuples.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
 
-            return new SpellChecker(patterns, actualRules, properties);
+            return new SpellChecker(patterns, affixes, properties);
         }
 
         // Sync
@@ -183,9 +182,9 @@ namespace Kurdspell
         public static SpellChecker FromReader(TextReader reader)
         {
             var patterns = new List<Pattern>();
-            var actualRules = new List<Rule>();
+            var affixes = new List<Affix>();
 
-            var rules = new List<Tuple<int, Rule>>();
+            var affixTuples = new List<Tuple<int, Affix>>();
             var properties = new Dictionary<string, string>();
 
             var section = ParseSection.None;
@@ -193,19 +192,19 @@ namespace Kurdspell
             while (reader.Peek() != -1)
             {
                 var current = reader.ReadLine();
-                section = ParseLine(current, section, properties, rules, patterns);
+                section = ParseLine(current, section, properties, affixTuples, patterns);
             }
 
-            actualRules = rules.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
+            affixes = affixTuples.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
 
-            return new SpellChecker(patterns, actualRules, properties);
+            return new SpellChecker(patterns, affixes, properties);
         }
 
         private static ParseSection ParseLine(
             string current,
             ParseSection section,
             Dictionary<string, string> properties,
-            List<Tuple<int, Rule>> rules,
+            List<Tuple<int, Affix>> affixes,
             List<Pattern> patterns)
         {
             if (current.StartsWith("~"))
@@ -225,8 +224,8 @@ namespace Kurdspell
                     case Information:
                         section = ParseSection.Information;
                         break;
-                    case Rules:
-                        section = ParseSection.Rules;
+                    case Affixes:
+                        section = ParseSection.Affixes;
                         break;
                     case Patterns:
                         section = ParseSection.Patterns;
@@ -249,18 +248,18 @@ namespace Kurdspell
                             }
                         }
                         break;
-                    case ParseSection.Rules:
+                    case ParseSection.Affixes:
                         {
                             var parts = current.Split(':');
                             if (parts.Length == 2 && int.TryParse(parts[0], out var number))
                             {
                                 var variants = parts[1].Split(',').Select(v => v.Trim()).ToArray();
-                                rules.Add(new Tuple<int, Rule>(number, new Rule(variants)));
+                                affixes.Add(new Tuple<int, Affix>(number, new Affix(variants)));
                             }
                         }
                         break;
                     case ParseSection.Patterns:
-                        // TODO: Make sure all of the rules are loaded before the patterns
+                        // TODO: Make sure all of the affixes are loaded before the patterns
                         patterns.Add(new Pattern(current));
                         break;
                 }
@@ -290,13 +289,13 @@ namespace Kurdspell
                 await writer.WriteLineAsync(prop.Value);
             }
 
-            await writer.WriteLineAsync(RulesSectionName);
+            await writer.WriteLineAsync(AffixesSectionName);
 
-            for (int i = 0; i < _rules.Count; i++)
+            for (int i = 0; i < _affixes.Count; i++)
             {
                 await writer.WriteAsync(i.ToString());
                 await writer.WriteAsync(": ");
-                await writer.WriteLineAsync(string.Join(",", _rules[i].Values));
+                await writer.WriteLineAsync(string.Join(",", _affixes[i].Values));
             }
 
             await writer.WriteLineAsync(PatternsSectionName);
@@ -326,13 +325,13 @@ namespace Kurdspell
                 writer.WriteLine(prop.Value);
             }
 
-            writer.WriteLine(RulesSectionName);
+            writer.WriteLine(AffixesSectionName);
 
-            for (int i = 0; i < _rules.Count; i++)
+            for (int i = 0; i < _affixes.Count; i++)
             {
                 writer.Write(i.ToString());
                 writer.Write(": ");
-                writer.WriteLine(string.Join(",", _rules[i].Values));
+                writer.WriteLine(string.Join(",", _affixes[i].Values));
             }
 
             writer.WriteLine(PatternsSectionName);
