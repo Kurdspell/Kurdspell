@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DictionaryEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"
+        Height="450"
+        Width="800"
+        AllowDrop="True"
+        Drop="Window_Drop">
+    
     <DockPanel LastChildFill="True">
         <Menu x:Name="mainMenu" DockPanel.Dock="Top">
             <MenuItem x:Name="fileMenuItem" Header="_File">
@@ -19,6 +24,13 @@
             </MenuItem>
         </Menu>
 
-        <ContentControl x:Name="mainContent" FlowDirection="RightToLeft" />
+        <ContentControl x:Name="mainContent"
+                        FlowDirection="RightToLeft">
+            
+            <TextBlock Text="Open a dictionary file by dropping it here"
+                       TextAlignment="Center"
+                       FlowDirection="LeftToRight"
+                       VerticalAlignment="Center" />
+        </ContentControl>
     </DockPanel>
 </Window>

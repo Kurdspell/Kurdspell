@@ -1,5 +1,8 @@
 ﻿using DictionaryEditor.Views;
 using Kurdspell;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace DictionaryEditor
@@ -25,8 +28,7 @@ namespace DictionaryEditor
 
             if (result == true)
             {
-                _spellChecker = await SpellChecker.FromFileAsync(dialog.FileName);
-                mainContent.Content = new DictionaryBrowser(_spellChecker);
+                await OpenDictionary(dialog.FileName);
             }
         }
 
@@ -69,7 +71,38 @@ namespace DictionaryEditor
 
             if (result == true)
             {
-                await _spellChecker.SaveAsync(dialog.FileName);
+                try
+                {
+                    await _spellChecker.SaveAsync(dialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.ToString());
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private async Task OpenDictionary(string path)
+        {
+            try
+            {
+                _spellChecker = await SpellChecker.FromFileAsync(path);
+                mainContent.Content = new DictionaryBrowser(_spellChecker);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private async void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                await OpenDictionary(files[0]);
             }
         }
     }
