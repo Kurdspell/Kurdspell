@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kurdspell", "Kurdspell\Kurd
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Sample\Sample.csproj", "{E27C48F7-8622-4E29-9267-689CA560AD06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample2", "Sample2\Sample2.csproj", "{A1A4F7A7-637F-4ECA-86A5-92AB6EA67DF8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kurdspell.Tests", "Kurdspell.Tests\Kurdspell.Tests.csproj", "{BEBB9907-5FE9-457D-A635-9A419FF41379}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample3", "Sample3\Sample3.csproj", "{305BA3E2-87BF-4B03-9854-6BEA6D088FFA}"
@@ -19,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DictionaryEditor", "Diction
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluation", "Evaluation\Evaluation.csproj", "{ED5AB881-F986-44D4-BC5F-B313C7BE5A16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compressor", "Compressor\Compressor.csproj", "{3F1D0A19-902A-4DB9-A433-2CEBBF36E203}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Compressor", "Compressor\Compressor.csproj", "{3F1D0A19-902A-4DB9-A433-2CEBBF36E203}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{E27C48F7-8622-4E29-9267-689CA560AD06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E27C48F7-8622-4E29-9267-689CA560AD06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E27C48F7-8622-4E29-9267-689CA560AD06}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1A4F7A7-637F-4ECA-86A5-92AB6EA67DF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1A4F7A7-637F-4ECA-86A5-92AB6EA67DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1A4F7A7-637F-4ECA-86A5-92AB6EA67DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1A4F7A7-637F-4ECA-86A5-92AB6EA67DF8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BEBB9907-5FE9-457D-A635-9A419FF41379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BEBB9907-5FE9-457D-A635-9A419FF41379}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEBB9907-5FE9-457D-A635-9A419FF41379}.Release|Any CPU.ActiveCfg = Release|Any CPU
