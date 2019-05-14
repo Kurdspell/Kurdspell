@@ -276,9 +276,12 @@ namespace Kurdspell
             using (var stream = File.OpenWrite(path))
             using (var writer = new StreamWriter(stream))
             {
+                stream.SetLength(0);
+
                 await SaveAsync(writer);
             }
         }
+
         public async Task SaveAsync(TextWriter writer)
         {
             await writer.WriteLineAsync(InformationSectionName);
@@ -314,6 +317,8 @@ namespace Kurdspell
             using (var stream = File.OpenWrite(path))
             using (var writer = new StreamWriter(stream))
             {
+                stream.SetLength(0);
+
                 Save(writer);
             }
         }
