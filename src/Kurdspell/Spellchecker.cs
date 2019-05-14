@@ -244,7 +244,7 @@ namespace Kurdspell
                             var parts = current.Split(':');
                             if (parts.Length == 2)
                             {
-                                properties.Add(parts[0], parts[1]);
+                                properties.Add(parts[0].Trim(), parts[1].Trim());
                             }
                         }
                         break;
@@ -271,15 +271,15 @@ namespace Kurdspell
 
         #region Persisting Dictionary
         // Async
-        public async Task PersistAsync(string path)
+        public async Task SaveAsync(string path)
         {
             using (var stream = File.OpenWrite(path))
             using (var writer = new StreamWriter(stream))
             {
-                await PersistAsync(writer);
+                await SaveAsync(writer);
             }
         }
-        public async Task PersistAsync(TextWriter writer)
+        public async Task SaveAsync(TextWriter writer)
         {
             await writer.WriteLineAsync(InformationSectionName);
             foreach (var prop in Properties)
@@ -289,6 +289,7 @@ namespace Kurdspell
                 await writer.WriteLineAsync(prop.Value);
             }
 
+            await writer.WriteLineAsync();
             await writer.WriteLineAsync(AffixesSectionName);
 
             for (int i = 0; i < _affixes.Count; i++)
@@ -298,6 +299,7 @@ namespace Kurdspell
                 await writer.WriteLineAsync(string.Join(",", _affixes[i].Values));
             }
 
+            await writer.WriteLineAsync();
             await writer.WriteLineAsync(PatternsSectionName);
 
             foreach (var pattern in _patterns)
@@ -307,15 +309,15 @@ namespace Kurdspell
         }
 
         // Sync
-        public void Persist(string path)
+        public void Save(string path)
         {
             using (var stream = File.OpenWrite(path))
             using (var writer = new StreamWriter(stream))
             {
-                Persist(writer);
+                Save(writer);
             }
         }
-        public void Persist(TextWriter writer)
+        public void Save(TextWriter writer)
         {
             writer.WriteLine(InformationSectionName);
             foreach (var prop in Properties)
@@ -325,6 +327,7 @@ namespace Kurdspell
                 writer.WriteLine(prop.Value);
             }
 
+            writer.WriteLine();
             writer.WriteLine(AffixesSectionName);
 
             for (int i = 0; i < _affixes.Count; i++)
@@ -334,6 +337,7 @@ namespace Kurdspell
                 writer.WriteLine(string.Join(",", _affixes[i].Values));
             }
 
+            writer.WriteLine();
             writer.WriteLine(PatternsSectionName);
 
             foreach (var pattern in _patterns)

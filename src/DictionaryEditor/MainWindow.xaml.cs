@@ -9,6 +9,8 @@ namespace DictionaryEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        private SpellChecker _spellChecker;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -23,8 +25,8 @@ namespace DictionaryEditor
 
             if (result == true)
             {
-                var spellchecker = await SpellChecker.FromFileAsync(dialog.FileName);
-                mainContent.Content = new DictionaryBrowser(spellchecker);
+                _spellChecker = await SpellChecker.FromFileAsync(dialog.FileName);
+                mainContent.Content = new DictionaryBrowser(_spellChecker);
             }
         }
 
@@ -54,6 +56,20 @@ namespace DictionaryEditor
             else
             {
                 mainContent.FlowDirection = FlowDirection.RightToLeft;
+            }
+        }
+
+        private async void SaveDictionaryMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_spellChecker == null) return;
+
+            var dialog = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
+            dialog.Filter = "Text File (*.txt)|*.txt|All Files (*.*)|*.*";
+            var result = dialog.ShowDialog();
+
+            if (result == true)
+            {
+                await _spellChecker.SaveAsync(dialog.FileName);
             }
         }
     }

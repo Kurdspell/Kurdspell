@@ -10,6 +10,7 @@
         <Menu x:Name="mainMenu" DockPanel.Dock="Top">
             <MenuItem x:Name="fileMenuItem" Header="_File">
                 <MenuItem x:Name="openDictionaryMenuItem" Header="_Open Dictionary" Click="OpenDictionaryMenuItem_Click" />
+                <MenuItem x:Name="saveDictionaryMenuItem" Header="_Save Dictionary" Click="SaveDictionaryMenuItem_Click" />
             </MenuItem>
 
             <MenuItem x:Name="viewMenuItem" Header="_View">
