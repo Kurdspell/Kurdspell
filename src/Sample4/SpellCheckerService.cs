@@ -21,7 +21,7 @@ namespace Sample4
         public SpellCheckerService()
         {
             Dictionary = File.ReadAllText(Path);
-            _spellchecker = new SpellChecker(Path);
+            _spellchecker = SpellChecker.FromFile(Path);
         }
 
         public bool Check(string word)

@@ -186,7 +186,7 @@ namespace Sample3
 
         private SpellCheckerVM CreateSpellCheker()
         {
-            checker = new SpellCheckerVM(new SpellChecker("ckb-IQ.txt"), this);
+            checker = new SpellCheckerVM(SpellChecker.FromFile("ckb-IQ.txt"), this);
             checker.LoadCustomDictionary();
             return checker;
         }

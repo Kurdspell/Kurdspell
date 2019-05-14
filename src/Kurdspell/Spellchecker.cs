@@ -9,6 +9,15 @@ namespace Kurdspell
 {
     public class SpellChecker
     {
+        private const string Information = "information";
+        private const string Rules = "rules";
+        private const string Patterns = "patterns";
+
+        private const string SectionPrefix = "~ ";
+        private const string InformationSectionName = SectionPrefix + Information;
+        private const string RulesSectionName = SectionPrefix + Rules;
+        private const string PatternsSectionName = SectionPrefix + Patterns;
+
         private enum ParseSection
         {
             None,
@@ -21,109 +30,16 @@ namespace Kurdspell
         private readonly List<Rule> _rules;
         private readonly Dictionary<char, List<Pattern>> _dictionary;
 
-        public SpellChecker(List<Pattern> patterns, List<Rule> rules)
+        public SpellChecker(List<Pattern> patterns, List<Rule> rules, Dictionary<string, string> properties = null)
         {
             _patterns = patterns;
             _rules = rules;
             _dictionary = new Dictionary<char, List<Pattern>>();
+            Properties = properties ?? new Dictionary<string, string>();
 
             foreach (var pattern in _patterns)
             {
                 AddPattern(pattern);
-            }
-        }
-
-        private void AddPattern(Pattern pattern)
-        {
-            if (!_dictionary.ContainsKey(pattern.Template[0]))
-            {
-                _dictionary[pattern.Template[0]] = new List<Pattern>();
-            }
-
-            _dictionary[pattern.Template[0]].Add(pattern);
-        }
-
-        public SpellChecker(string dictionaryPath)
-        {
-            _patterns = new List<Pattern>();
-            _rules = new List<Rule>();
-
-            var rules = new List<Tuple<int, Rule>>();
-
-            using (var stream = File.OpenRead(dictionaryPath))
-            using (var reader = new StreamReader(stream, Encoding.Unicode, true))
-            {
-                var section = ParseSection.None;
-
-                while (!reader.EndOfStream)
-                {
-                    var current = reader.ReadLine();
-                    if (current.StartsWith("~"))
-                    {
-                        var index = 1;
-                        while (index > current.Length)
-                        {
-                            index++;
-
-                            if (current[index] != ' ')
-                                break;
-                        }
-
-                        var sectionName = current.Substring(index);
-                        switch (sectionName.Trim().ToLowerInvariant())
-                        {
-                            case "information":
-                                section = ParseSection.Information;
-                                break;
-                            case "rules":
-                                section = ParseSection.Rules;
-                                break;
-                            case "patterns":
-                                section = ParseSection.Patterns;
-                                break;
-
-                        }
-                    }
-                    else
-                    {
-                        switch (section)
-                        {
-                            case ParseSection.Information:
-                                // Ignore for now
-                                break;
-                            case ParseSection.Rules:
-                                var parts = current.Split(':');
-                                if (parts.Length == 2 && int.TryParse(parts[0], out var number))
-                                {
-                                    var variants = parts[1].Split(',').Select(v => v.Trim()).ToArray();
-                                    rules.Add(new Tuple<int, Rule>(number, new Rule(variants)));
-                                }
-
-                                break;
-                            case ParseSection.Patterns:
-                                // TODO: Make sure all of the rules are loaded before the patterns
-                                _patterns.Add(new Pattern(current));
-                                break;
-                        }
-                    }
-                }
-            }
-
-            _rules = rules.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
-
-            _dictionary = new Dictionary<char, List<Pattern>>();
-
-            foreach (var pattern in _patterns)
-            {
-                if (string.IsNullOrWhiteSpace(pattern.Template))
-                    continue;
-
-                if (!_dictionary.ContainsKey(pattern.Template[0]))
-                {
-                    _dictionary[pattern.Template[0]] = new List<Pattern>();
-                }
-
-                _dictionary[pattern.Template[0]].Add(pattern);
             }
         }
 
@@ -135,6 +51,8 @@ namespace Kurdspell
         {
             return _patterns.SelectMany(p => p.GetVariants(_rules));
         }
+
+        public Dictionary<string, string> Properties { get; } = new Dictionary<string, string>();
 
         public bool Check(string word)
         {
@@ -187,5 +105,243 @@ namespace Kurdspell
             _patterns.Add(pattern);
             AddPattern(pattern);
         }
+
+        private void AddPattern(Pattern pattern)
+        {
+            if (!_dictionary.ContainsKey(pattern.Template[0]))
+            {
+                _dictionary[pattern.Template[0]] = new List<Pattern>();
+            }
+
+            _dictionary[pattern.Template[0]].Add(pattern);
+        }
+
+        #region Parsing Dictionary
+        // Async
+        public static async Task<SpellChecker> FromFileAsync(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            {
+                return await FromStreamAsync(stream);
+            }
+        }
+
+        public static async Task<SpellChecker> FromStreamAsync(Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                return await FromReaderAsync(reader);
+            }
+        }
+
+        public static async Task<SpellChecker> FromReaderAsync(TextReader reader)
+        {
+            var patterns = new List<Pattern>();
+            var actualRules = new List<Rule>();
+
+            var rules = new List<Tuple<int, Rule>>();
+            var properties = new Dictionary<string, string>();
+
+            var section = ParseSection.None;
+
+            while (reader.Peek() != -1)
+            {
+                var current = await reader.ReadLineAsync();
+                section = ParseLine(current, section, properties, rules, patterns);
+            }
+
+            actualRules = rules.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
+
+            return new SpellChecker(patterns, actualRules, properties);
+        }
+
+        // Sync
+        public static SpellChecker FromFile(string path)
+        {
+            using (var stream = File.OpenRead(path))
+            {
+                return FromStream(stream);
+            }
+        }
+
+        public static SpellChecker FromStream(Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                return FromReader(reader);
+            }
+        }
+
+        public static SpellChecker FromString(string content)
+        {
+            using (var reader = new StringReader(content))
+            {
+                return FromReader(reader);
+            }
+        }
+
+        public static SpellChecker FromReader(TextReader reader)
+        {
+            var patterns = new List<Pattern>();
+            var actualRules = new List<Rule>();
+
+            var rules = new List<Tuple<int, Rule>>();
+            var properties = new Dictionary<string, string>();
+
+            var section = ParseSection.None;
+
+            while (reader.Peek() != -1)
+            {
+                var current = reader.ReadLine();
+                section = ParseLine(current, section, properties, rules, patterns);
+            }
+
+            actualRules = rules.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
+
+            return new SpellChecker(patterns, actualRules, properties);
+        }
+
+        private static ParseSection ParseLine(
+            string current,
+            ParseSection section,
+            Dictionary<string, string> properties,
+            List<Tuple<int, Rule>> rules,
+            List<Pattern> patterns)
+        {
+            if (current.StartsWith("~"))
+            {
+                var index = 1;
+                while (index > current.Length)
+                {
+                    index++;
+
+                    if (current[index] != ' ')
+                        break;
+                }
+
+                var sectionName = current.Substring(index);
+                switch (sectionName.Trim().ToLowerInvariant())
+                {
+                    case Information:
+                        section = ParseSection.Information;
+                        break;
+                    case Rules:
+                        section = ParseSection.Rules;
+                        break;
+                    case Patterns:
+                        section = ParseSection.Patterns;
+                        break;
+                }
+            }
+            else
+            {
+                switch (section)
+                {
+                    case ParseSection.Information:
+                        {
+                            // Sample Property:
+                            // Name : Value
+
+                            var parts = current.Split(':');
+                            if (parts.Length == 2)
+                            {
+                                properties.Add(parts[0], parts[1]);
+                            }
+                        }
+                        break;
+                    case ParseSection.Rules:
+                        {
+                            var parts = current.Split(':');
+                            if (parts.Length == 2 && int.TryParse(parts[0], out var number))
+                            {
+                                var variants = parts[1].Split(',').Select(v => v.Trim()).ToArray();
+                                rules.Add(new Tuple<int, Rule>(number, new Rule(variants)));
+                            }
+                        }
+                        break;
+                    case ParseSection.Patterns:
+                        // TODO: Make sure all of the rules are loaded before the patterns
+                        patterns.Add(new Pattern(current));
+                        break;
+                }
+            }
+
+            return section;
+        }
+        #endregion
+
+        #region Persisting Dictionary
+        // Async
+        public async Task PersistAsync(string path)
+        {
+            using (var stream = File.OpenWrite(path))
+            using (var writer = new StreamWriter(stream))
+            {
+                await PersistAsync(writer);
+            }
+        }
+        public async Task PersistAsync(TextWriter writer)
+        {
+            await writer.WriteLineAsync(InformationSectionName);
+            foreach (var prop in Properties)
+            {
+                await writer.WriteAsync(prop.Key);
+                await writer.WriteAsync(": ");
+                await writer.WriteLineAsync(prop.Value);
+            }
+
+            await writer.WriteLineAsync(RulesSectionName);
+
+            for (int i = 0; i < _rules.Count; i++)
+            {
+                await writer.WriteAsync(i.ToString());
+                await writer.WriteAsync(": ");
+                await writer.WriteLineAsync(string.Join(",", _rules[i].Values));
+            }
+
+            await writer.WriteLineAsync(PatternsSectionName);
+
+            foreach (var pattern in _patterns)
+            {
+                await writer.WriteLineAsync(pattern.Template);
+            }
+        }
+
+        // Sync
+        public void Persist(string path)
+        {
+            using (var stream = File.OpenWrite(path))
+            using (var writer = new StreamWriter(stream))
+            {
+                Persist(writer);
+            }
+        }
+        public void Persist(TextWriter writer)
+        {
+            writer.WriteLine(InformationSectionName);
+            foreach (var prop in Properties)
+            {
+                writer.Write(prop.Key);
+                writer.Write(": ");
+                writer.WriteLine(prop.Value);
+            }
+
+            writer.WriteLine(RulesSectionName);
+
+            for (int i = 0; i < _rules.Count; i++)
+            {
+                writer.Write(i.ToString());
+                writer.Write(": ");
+                writer.WriteLine(string.Join(",", _rules[i].Values));
+            }
+
+            writer.WriteLine(PatternsSectionName);
+
+            foreach (var pattern in _patterns)
+            {
+                writer.WriteLine(pattern.Template);
+            }
+        }
+        #endregion
     }
 }

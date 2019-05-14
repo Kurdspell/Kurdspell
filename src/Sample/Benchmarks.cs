@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BenchmarkDotNet.Attributes;
-using Kurdspell; 
+using Kurdspell;
 
 namespace Sample
 {

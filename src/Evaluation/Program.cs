@@ -12,7 +12,7 @@ namespace Evaluation
     {
         static void Main(string[] args)
         {
-            var spellChecker = new SpellChecker("ckb-IQ.txt");
+            var spellChecker = SpellChecker.FromFile("ckb-IQ.txt");
 
             var entries = new List<Entry>();
 
