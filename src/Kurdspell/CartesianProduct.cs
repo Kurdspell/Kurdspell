@@ -5,6 +5,7 @@ namespace Kurdspell
 {
     public static class CartesianProduct
     {
+        // from: https://ericlippert.com/2010/06/28/computing-a-cartesian-product-with-linq/
         public static IEnumerable<IEnumerable<T>> Linq<T>(this IEnumerable<IEnumerable<T>> sequences)
         {
             // base case: 
