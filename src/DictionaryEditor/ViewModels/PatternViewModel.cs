@@ -9,13 +9,13 @@ namespace DictionaryEditor.ViewModels
     {
         private readonly IReadOnlyList<Affix> _affixes;
         private static readonly IReadOnlyList<string> _emptyList = new List<string>();
-        private Pattern _pattern;
 
         public PatternViewModel(Pattern p, IReadOnlyList<Affix> affixes)
         {
             _affixes = affixes;
-            _pattern = p;
+            Pattern = p;
             _template = p.Template;
+            SetParts(p);
         }
 
         private ObservableCollection<PatternPartViewModel> _parts = new ObservableCollection<PatternPartViewModel>();
@@ -24,7 +24,7 @@ namespace DictionaryEditor.ViewModels
             get { return new ReadOnlyObservableCollection<PatternPartViewModel>(_parts); }
         }
 
-        public IEnumerable<string> Variants => IsValid ? _pattern.GetVariants(_affixes) : _emptyList;
+        public IEnumerable<string> Variants => IsValid ? Pattern.GetVariants(_affixes) : _emptyList;
 
         private bool _isValid = true;
         public bool IsValid
@@ -45,28 +45,8 @@ namespace DictionaryEditor.ViewModels
 
                     try
                     {
-                        _pattern = new Pattern(_template);
-                        _parts.Clear();
-
-                        foreach (var part in _pattern.Parts)
-                        {
-                            if (part is int affix)
-                            {
-                                if (affix > _affixes.Count - 1)
-                                {
-                                    _isValid = false;
-                                    break;
-                                }
-                                else
-                                {
-                                    _parts.Add(new PatternPartViewModel(true, _affixes[affix].Values));
-                                }
-                            }
-                            else
-                            {
-                                _parts.Add(new PatternPartViewModel(false, _emptyList));
-                            }
-                        }
+                        Pattern = new Pattern(_template);
+                        SetParts(Pattern);   
                     }
                     catch (Exception)
                     {
@@ -78,17 +58,47 @@ namespace DictionaryEditor.ViewModels
                 }
             }
         }
+
+        public Pattern Pattern { get; private set; }
+
+        private void SetParts(Pattern pattern)
+        {
+            _parts.Clear();
+
+            foreach (var part in pattern.Parts)
+            {
+                if (part is int affix)
+                {
+                    if (affix > _affixes.Count - 1)
+                    {
+                        _isValid = false;
+                        break;
+                    }
+                    else
+                    {
+                        _parts.Add(new PatternPartViewModel($"{{{affix}}}", true, _affixes[affix].Values));
+                    }
+                }
+                else
+                {
+                    _parts.Add(new PatternPartViewModel(part as string, false, _emptyList));
+                }
+            }
+        }
     }
 
     public class PatternPartViewModel
     {
-        public PatternPartViewModel(bool isAffix, IReadOnlyCollection<string> possibilities)
+        public PatternPartViewModel(string text, bool isAffix, IReadOnlyCollection<string> possibilities)
         {
+            Text = text;
             IsAffix = isAffix;
             Possibilities = possibilities;
         }
 
         public bool IsAffix { get; }
+        public string Text { get; }
         public IReadOnlyCollection<string> Possibilities { get; }
+        public string Hint => string.Join(",", Possibilities);
     }
 }

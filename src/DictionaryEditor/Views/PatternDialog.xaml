@@ -1,0 +1,67 @@
+﻿<Window x:Class="DictionaryEditor.Views.PatternDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DictionaryEditor"
+        xmlns:controls="clr-namespace:DictionaryEditor.Controls"
+        mc:Ignorable="d"
+        Title="PatternDialog" Height="450" Width="800">
+    <Grid Margin="5" FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="3*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:LabeledControl Label="Pattern: ">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="patternTextBox"
+                         FontSize="14" Text="{Binding Template, UpdateSourceTrigger=PropertyChanged}"
+                         TextChanged="PatternTextBox_TextChanged"
+                         Padding="0,3">
+                </TextBox>
+
+                <TextBlock Text="!" Background="Red"
+                           FontWeight="Bold"
+                           Width="15"
+                           Height="15"
+                           VerticalAlignment="Center"
+                           TextAlignment="Center"
+                           Foreground="White"
+                           Margin="5, 0"
+                           Grid.Column="1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsValid}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </controls:LabeledControl>
+
+        <controls:LabeledControl Label="Similar Patterns: " Grid.Row="2" >
+            <ListBox x:Name="similarsList" ItemsSource="{Binding Variants}" />
+        </controls:LabeledControl>
+
+        <controls:LabeledControl Label="Variants: " Grid.Row="4" >
+            <ListBox x:Name="variantsList" ItemsSource="{Binding Variants}" />
+        </controls:LabeledControl>
+
+        <TextBlock Text="{Binding ElementName=variantsList, Path=Items.Count}"
+                   Grid.Row="5"/>
+    </Grid>
+</Window>

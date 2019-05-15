@@ -60,5 +60,24 @@ namespace DictionaryEditor.Views
                 }
             };
         }
+
+        private void PatternPart_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var button = sender as FrameworkElement;
+            var part = button.Tag as PatternPartViewModel;
+            if (part != null && part.IsAffix)
+            {
+                MessageBox.Show(part.Hint);
+            }
+        }
+
+        private void PatternsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var pattern = patternsList.SelectedItem as PatternViewModel;
+            if (pattern == null) return;
+
+            var dialog = new PatternDialog(_viewModel.SpellChecker, pattern);
+            dialog.ShowDialog();
+        }
     }
 }

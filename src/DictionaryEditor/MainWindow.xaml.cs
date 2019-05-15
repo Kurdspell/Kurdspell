@@ -48,16 +48,16 @@ namespace DictionaryEditor
 
         private void ToggleDirection(FlowDirection direction)
         {
-            if (mainContent.FlowDirection == direction)
+            if (App.This.Direction == direction)
                 return;
 
             if (mainContent.FlowDirection == FlowDirection.RightToLeft)
             {
-                mainContent.FlowDirection = FlowDirection.LeftToRight;
+                App.This.Direction = FlowDirection.LeftToRight;
             }
             else
             {
-                mainContent.FlowDirection = FlowDirection.RightToLeft;
+                App.This.Direction = FlowDirection.RightToLeft;
             }
         }
 

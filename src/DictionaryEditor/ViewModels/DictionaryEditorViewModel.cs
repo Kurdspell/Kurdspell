@@ -6,14 +6,12 @@ namespace DictionaryEditor.ViewModels
 {
     public class DictionaryEditorViewModel : BindableBase
     {
-        private readonly SpellChecker _spellChecker;
-
         public DictionaryEditorViewModel(SpellChecker spellChecker)
         {
-            _spellChecker = spellChecker;
+            SpellChecker = spellChecker;
             Patterns = new ObservableCollection<PatternViewModel>(
-                          _spellChecker.GetPatterns()
-                                       .Select(p => new PatternViewModel(p, _spellChecker.GetAffixes()))
+                          SpellChecker.GetPatterns()
+                                       .Select(p => new PatternViewModel(p, SpellChecker.GetAffixes()))
                           );
         }
 
@@ -30,5 +28,7 @@ namespace DictionaryEditor.ViewModels
             get { return _selectedPattern; }
             set { SetProperty(ref _selectedPattern, value); }
         }
+
+        public SpellChecker SpellChecker { get; }
     }
 }

@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:DictionaryEditor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="8, 4" />
+        </Style>
     </Application.Resources>
 </Application>

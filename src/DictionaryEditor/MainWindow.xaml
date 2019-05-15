@@ -25,7 +25,7 @@
         </Menu>
 
         <ContentControl x:Name="mainContent"
-                        FlowDirection="RightToLeft">
+                        FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}">
             
             <TextBlock Text="Open a dictionary file by dropping it here"
                        TextAlignment="Center"
