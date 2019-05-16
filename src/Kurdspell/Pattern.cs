@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kurdspell
 {
-    public class Pattern
+    public struct Pattern
     {
         public Pattern(string template)
         {
@@ -469,7 +469,7 @@ namespace Kurdspell
         public override string ToString() => Template;
     }
 
-    public class Affix
+    public struct Affix
     {
         public Affix(string name, params string[] values)
         {
