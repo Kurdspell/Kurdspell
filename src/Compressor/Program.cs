@@ -31,7 +31,7 @@ namespace Compresser
                                     .Distinct()
                                     .ToList();
 
-            var acutalAffixes = affixGroups.Select((items, i) => new Affix(items)).ToList();
+            var acutalAffixes = affixGroups.Select((items, i) => new Affix(i.ToString(), items)).ToList();
 
             foreach (var word in words)
             {
@@ -146,7 +146,7 @@ namespace Compresser
                     int count = 0;
                     foreach (var variant in variants)
                     {
-                        if (pattern.IsExactly(variant.Text, acutalAffixes))
+                        if (pattern.IsExactly(variant.Text, acutalAffixes.ToDictionary(a => "{" + a.Name + "}")))
                             count++;
                     }
 

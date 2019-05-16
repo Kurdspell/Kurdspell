@@ -7,10 +7,10 @@ namespace DictionaryEditor.ViewModels
 {
     public class PatternViewModel : BindableBase
     {
-        private readonly IReadOnlyList<Affix> _affixes;
+        private readonly IReadOnlyDictionary<string, Affix> _affixes;
         private static readonly IReadOnlyList<string> _emptyList = new List<string>();
 
-        public PatternViewModel(Pattern p, IReadOnlyList<Affix> affixes)
+        public PatternViewModel(Pattern p, IReadOnlyDictionary<string, Affix> affixes)
         {
             _affixes = affixes;
             Pattern = p;
@@ -46,7 +46,7 @@ namespace DictionaryEditor.ViewModels
                     try
                     {
                         Pattern = new Pattern(_template);
-                        SetParts(Pattern);   
+                        SetParts(Pattern);
                     }
                     catch (Exception)
                     {
@@ -65,18 +65,19 @@ namespace DictionaryEditor.ViewModels
         {
             _parts.Clear();
 
-            foreach (var part in pattern.Parts)
+            for (int i = 0; i < pattern.Parts.Count; i++)
             {
-                if (part is int affix)
+                var part = pattern.Parts[i];
+                if (pattern.IsPartAnAffixFlags[i])
                 {
-                    if (affix > _affixes.Count - 1)
+                    if (_affixes.ContainsKey(part))
                     {
                         _isValid = false;
                         break;
                     }
                     else
                     {
-                        _parts.Add(new PatternPartViewModel($"{{{affix}}}", true, _affixes[affix].Values));
+                        _parts.Add(new PatternPartViewModel(part, true, _affixes[part].Values));
                     }
                 }
                 else

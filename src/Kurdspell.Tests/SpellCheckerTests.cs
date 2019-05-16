@@ -19,12 +19,12 @@ namespace Kurdspell.Tests
         {
             var affixes = new List<Affix>
             {
-                new Affix("om", "oyn", "oyt", "on", "wat", "on"),
-                new Affix("im", "in", "it", "n", "et", "n"),
-                new Affix("m", "man", "t", "tan", "y", "yan"),
-                new Affix("em", "eyn", "eyt", "en", "at", "en"),
-                new Affix(new string[] { "m", "in", "a", "n", "et", "n" }),
-                new Affix(new string[] { "ish", "" }),
+                new Affix("0", "om", "oyn", "oyt", "on", "wat", "on"),
+                new Affix("1", "im", "in", "it", "n", "et", "n"),
+                new Affix("2", "m", "man", "t", "tan", "y", "yan"),
+                new Affix("3", "em", "eyn", "eyt", "en", "at", "en"),
+                new Affix("4", new string[] { "m", "in", "a", "n", "et", "n" }),
+                new Affix("5", new string[] { "ish", "" }),
             };
 
             var patterns = new List<Pattern>
@@ -49,14 +49,14 @@ namespace Kurdspell.Tests
         {
             var affixes = new List<Affix>
             {
-                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }),
-                new Affix(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
-                new Affix(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
-                new Affix(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
-                new Affix(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
-                new Affix(new string[] { "یش", "ێک","" }),
-                new Affix(new string[] { "وە", "ووە","" }),
-                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
+                new Affix("0", new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }),
+                new Affix("1", new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }),
+                new Affix("2", new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }),
+                new Affix("3", new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }),
+                new Affix("4", new string[] { "یەکە", "یەک", "یەکان", "یان", "" }),
+                new Affix("5", new string[] { "یش", "ێک","" }),
+                new Affix("6", new string[] { "وە", "ووە","" }),
+                new Affix("7", new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }),
             };
 
             var patterns = new List<Pattern>
@@ -81,10 +81,10 @@ namespace Kurdspell.Tests
         {
             var affixes = new List<Affix>
             {
-                new Affix("om", "oyn", "oyt", "on", "wat", "on"),
-                new Affix("im", "in", "it", "n", "et", "n"),
-                new Affix("m", "man", "t", "tan", "y", "yan"),
-                new Affix("em", "eyn", "eyt", "en", "at", "en"),
+                new Affix("0", "om", "oyn", "oyt", "on", "wat", "on"),
+                new Affix("1", "im", "in", "it", "n", "et", "n"),
+                new Affix("2", "m", "man", "t", "tan", "y", "yan"),
+                new Affix("3", "em", "eyn", "eyt", "en", "at", "en"),
             };
 
             var patterns = new List<Pattern>

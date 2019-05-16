@@ -26,13 +26,13 @@ namespace Kurdspell
         }
 
         private readonly List<Pattern> _patterns;
-        private readonly List<Affix> _affixes;
+        private readonly Dictionary<string, Affix> _affixes;
         private readonly Dictionary<char, List<Pattern>> _dictionary;
 
         public SpellChecker(List<Pattern> patterns, List<Affix> affixes, Dictionary<string, string> properties = null)
         {
             _patterns = patterns;
-            _affixes = affixes;
+            _affixes = affixes.ToDictionary(a => "{" + a.Name + "}");
             _dictionary = new Dictionary<char, List<Pattern>>();
             Properties = properties ?? new Dictionary<string, string>();
 
@@ -44,7 +44,7 @@ namespace Kurdspell
 
         public IReadOnlyList<Pattern> GetPatterns() => _patterns;
 
-        public IReadOnlyList<Affix> GetAffixes() => _affixes;
+        public IReadOnlyDictionary<string, Affix> GetAffixes() => _affixes;
 
         public IEnumerable<string> GetWordList()
         {
@@ -253,8 +253,9 @@ namespace Kurdspell
                             var parts = current.Split(':');
                             if (parts.Length == 2 && int.TryParse(parts[0], out var number))
                             {
+                                var name = parts[0].Trim().ToLowerInvariant(); // Affix names are case-insensitive
                                 var variants = parts[1].Split(',').Select(v => v.Trim()).ToArray();
-                                affixes.Add(new Tuple<int, Affix>(number, new Affix(variants)));
+                                affixes.Add(new Tuple<int, Affix>(number, new Affix(name, variants)));
                             }
                         }
                         break;
@@ -295,11 +296,11 @@ namespace Kurdspell
             await writer.WriteLineAsync();
             await writer.WriteLineAsync(AffixesSectionName);
 
-            for (int i = 0; i < _affixes.Count; i++)
+            foreach (var affix in _affixes.Values)
             {
-                await writer.WriteAsync(i.ToString());
+                await writer.WriteAsync(affix.Name);
                 await writer.WriteAsync(": ");
-                await writer.WriteLineAsync(string.Join(",", _affixes[i].Values));
+                await writer.WriteLineAsync(string.Join(",", affix.Values));
             }
 
             await writer.WriteLineAsync();
@@ -335,11 +336,11 @@ namespace Kurdspell
             writer.WriteLine();
             writer.WriteLine(AffixesSectionName);
 
-            for (int i = 0; i < _affixes.Count; i++)
+            foreach (var affix in _affixes.Values)
             {
-                writer.Write(i.ToString());
+                writer.Write(affix.Name);
                 writer.Write(": ");
-                writer.WriteLine(string.Join(",", _affixes[i].Values));
+                writer.WriteLine(string.Join(",", affix.Values));
             }
 
             writer.WriteLine();

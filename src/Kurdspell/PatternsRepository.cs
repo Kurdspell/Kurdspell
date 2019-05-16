@@ -10,12 +10,12 @@ namespace Kurdspell
         {
             return new List<Affix>
             {
-                new Affix(new string[] { "m", "man", "t", "tan", "y", "yan" }),
-                new Affix(new string[] { "m", "in", "a", "n", "et", "n" }),
-                new Affix(new string[] { "om", "oyn", "oyt", "on", "wat", "on" }),
-                new Affix(new string[] { "m", "in", "t", "n", "et", "n" }),
-                new Affix(new string[] { "yaka", "yek", "yakan", "yan", "" }),
-                new Affix(new string[] { "ish", "" }),
+                new Affix("0", new string[] { "m", "man", "t", "tan", "y", "yan" }),
+                new Affix("1", new string[] { "m", "in", "a", "n", "et", "n" }),
+                new Affix("2", new string[] { "om", "oyn", "oyt", "on", "wat", "on" }),
+                new Affix("3", new string[] { "m", "in", "t", "n", "et", "n" }),
+                new Affix("4", new string[] { "yaka", "yek", "yakan", "yan", "" }),
+                new Affix("5", new string[] { "ish", "" }),
             };
         }
 
@@ -23,15 +23,15 @@ namespace Kurdspell
         {
             return new List<Affix>
             {
-                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }), //0 
-                new Affix(new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }), //1
-                new Affix(new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }), //2 
-                new Affix(new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }), //3
-                new Affix(new string[] { "یەکە", "یەک", "یەکان", "یان", "" }), //4 
-                new Affix(new string[] { "یش", "ێک","" }), //5
-                new Affix(new string[] { "وە", "ووە","" }), //6 
-                new Affix(new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }), //7
-                new Affix(new string[] { "نە", "" }), //8
+                new Affix("0", new string[] { "م", "مان", "ت", "تان", "ی", "یان","" }), //0 
+                new Affix("1", new string[] { "م", "ین", "ە", "ن", "ێت", "ن" }), //1
+                new Affix("2", new string[] { "ۆم", "ۆین", "ۆیت", "ۆن", "وات", "ۆن" }), //2 
+                new Affix("3", new string[] { "م", "ین", "ت", "ن", "ێت", "ن" }), //3
+                new Affix("4", new string[] { "یەکە", "یەک", "یەکان", "یان", "" }), //4 
+                new Affix("5", new string[] { "یش", "ێک","" }), //5
+                new Affix("6", new string[] { "وە", "ووە","" }), //6 
+                new Affix("7", new string[] { "م", "مان", "ت", "تان", "ی", "یان", "", "ە" }), //7
+                new Affix("8", new string[] { "نە", "" }), //8
             };
         }
 

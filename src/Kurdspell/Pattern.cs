@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace Kurdspell
 {
-    public struct Pattern
+    public class Pattern
     {
         public Pattern(string template)
         {
             Template = template.ToLower();
 
             var dictionary = new Dictionary<int, int>();
-            var parts = new List<object>();
+            var parts = new List<string>();
+            var flags = new List<bool>();
 
             int index = 0;
             int start = 0;
@@ -27,6 +28,7 @@ namespace Kurdspell
                     {
                         var current = Template.Substring(start, index - start);
                         parts.Add(current);
+                        flags.Add(false);
                     }
 
                     start = index;
@@ -37,24 +39,22 @@ namespace Kurdspell
                     }
 
                     var text = Template.Substring(start, index - start + 1);
-                    if (!int.TryParse(text.Substring(1, text.Length - 2), out var number))
-                    {
-                        throw new ArgumentException("Affix names must be numbers");
-                    }
-
-                    parts.Add(number);
+                    parts.Add(text);
+                    flags.Add(true);
 
                     start = index + 1;
                 }
                 else if (index == template.Length - 1 && Template[index] != '}')
                 {
                     parts.Add(Template.Substring(start, index + 1 - start));
+                    flags.Add(false);
                 }
 
                 index++;
             }
 
             Parts = parts;
+            IsPartAnAffixFlags = flags;
 
             _firstChar = Template.Length >= 1 ? Template[0] : '\0';
             _secondChar = Template.Length >= 2 ? Template[1] : '\0';
@@ -67,7 +67,8 @@ namespace Kurdspell
 
         public readonly string Template;
 
-        public IReadOnlyList<object> Parts { get; }
+        public IReadOnlyList<string> Parts { get; }
+        public IReadOnlyList<bool> IsPartAnAffixFlags { get; }
 
         private readonly char _firstChar;
         private readonly char _secondChar;
@@ -76,7 +77,7 @@ namespace Kurdspell
         private readonly char _fifthChar;
         private readonly byte _length;
 
-        public bool IsExactly(string word, int wLength, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyList<Affix> affixes, int partIndex = 1, int charIndex = 0)
+        public bool IsExactly(string word, int wLength, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyDictionary<string, Affix> affixes, int partIndex = 1, int charIndex = 0)
         {
             if (charIndex == 0)
             {
@@ -184,14 +185,15 @@ namespace Kurdspell
             {
                 var p = Parts[partIndex];
 
-                if (p is int affix)
+                if (IsPartAnAffixFlags[partIndex])
                 {
                     if (matches == null)
                         matches = new List<int>();
                     else
                         matches.Clear();
 
-                    var variants = affixes[affix].Values;
+                    var affix = affixes[p];
+                    var variants = affix.Values;
                     var shouldGoOn = false;
 
                     int goodLength = 0;
@@ -249,7 +251,7 @@ namespace Kurdspell
             return charIndex == wLength;
         }
 
-        public bool IsExactly(string word, IReadOnlyList<Affix> affixes)
+        public bool IsExactly(string word, IReadOnlyDictionary<string, Affix> affixes)
         {
             var secondChar = word.Length > 1 ? word[1] : '\0';
             var thirdChar = word.Length > 2 ? word[2] : '\0';
@@ -259,7 +261,7 @@ namespace Kurdspell
             return IsExactly(word, word.Length, secondChar, thirdChar, fourthChar, fifthChar, affixes);
         }
 
-        public IEnumerable<string> GetVariants(IReadOnlyList<Affix> affixes)
+        public IEnumerable<string> GetVariants(IReadOnlyDictionary<string, Affix> affixes)
         {
             return Explode(affixes).Select(parts => string.Join("", parts));
         }
@@ -292,7 +294,7 @@ namespace Kurdspell
             return true;
         }
 
-        public bool IsCloseEnough(string word, IReadOnlyList<Affix> affixes, StringBuilder builder = null, int i = 0)
+        public bool IsCloseEnough(string word, IReadOnlyDictionary<string, Affix> affixes, StringBuilder builder = null, int i = 0)
         {
             builder = builder ?? new StringBuilder(word.Length);
             var matches = new List<int>(10);
@@ -301,11 +303,11 @@ namespace Kurdspell
             {
                 var p = Parts[i];
 
-                if (p is int affix)
+                if (IsPartAnAffixFlags[i])
                 {
                     matches.Clear();
 
-                    var variants = affixes[affix].Values;
+                    var variants = affixes[p].Values;
                     var shouldGoOn = false;
 
                     for (int j = 0; j < variants.Length; j++)
@@ -366,15 +368,15 @@ namespace Kurdspell
             return true;
         }
 
-        public IEnumerable<IEnumerable<string>> Explode(IReadOnlyList<Affix> affixes)
+        public IEnumerable<IEnumerable<string>> Explode(IReadOnlyDictionary<string, Affix> affixes)
         {
             var sets = new List<IEnumerable<string>>();
             for (int i = 0; i < Parts.Count; i++)
             {
                 IEnumerable<string> set;
-                if (Parts[i] is int affix)
+                if (IsPartAnAffixFlags[i])
                 {
-                    set = affixes[affix].Values;
+                    set = affixes[Parts[i]].Values;
                 }
                 else
                 {
@@ -424,7 +426,7 @@ namespace Kurdspell
             return list;
         }
 
-        public static List<string> GetTop(IReadOnlyList<Pattern> patterns, string word, int n, IReadOnlyList<Affix> affixes)
+        public static List<string> GetTop(IReadOnlyList<Pattern> patterns, string word, int n, IReadOnlyDictionary<string, Affix> affixes)
         {
             ConcurrentBag<Pattern> closePatterns = new ConcurrentBag<Pattern>();
             Parallel.For(0, patterns.Count, i =>
@@ -467,13 +469,15 @@ namespace Kurdspell
         public override string ToString() => Template;
     }
 
-    public struct Affix
+    public class Affix
     {
-        public Affix(params string[] values) : this()
+        public Affix(string name, params string[] values)
         {
             Values = values;
+            Name = name;
         }
 
+        public string Name { get; }
         public string[] Values { get; }
     }
 }

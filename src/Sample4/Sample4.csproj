@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\Sample3\ckb-IQ.txt" Link="ckb-IQ.txt" />
+    <Content Include="..\Sample3\ckb-IQ.txt" Link="ckb-IQ.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
