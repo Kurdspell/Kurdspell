@@ -48,7 +48,7 @@ namespace DictionaryEditor.ViewModels
                         Pattern = new Pattern(_template);
                         SetParts(Pattern);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         isValid = false;
                     }
@@ -70,7 +70,7 @@ namespace DictionaryEditor.ViewModels
                 var part = pattern.Parts[i];
                 if (pattern.IsPartAnAffixFlags[i])
                 {
-                    if (_affixes.ContainsKey(part))
+                    if (!_affixes.ContainsKey(part))
                     {
                         _isValid = false;
                         break;

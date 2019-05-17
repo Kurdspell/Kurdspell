@@ -138,7 +138,6 @@ namespace Kurdspell
             var patterns = new List<Pattern>();
             var affixes = new List<Affix>();
 
-            var affixTuples = new List<Tuple<int, Affix>>();
             var properties = new Dictionary<string, string>();
 
             var section = ParseSection.None;
@@ -146,10 +145,8 @@ namespace Kurdspell
             while (reader.Peek() != -1)
             {
                 var current = await reader.ReadLineAsync();
-                section = ParseLine(current, section, properties, affixTuples, patterns);
+                section = ParseLine(current, section, properties, affixes, patterns);
             }
-
-            affixes = affixTuples.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
 
             return new SpellChecker(patterns, affixes, properties);
         }
@@ -184,7 +181,6 @@ namespace Kurdspell
             var patterns = new List<Pattern>();
             var affixes = new List<Affix>();
 
-            var affixTuples = new List<Tuple<int, Affix>>();
             var properties = new Dictionary<string, string>();
 
             var section = ParseSection.None;
@@ -192,10 +188,8 @@ namespace Kurdspell
             while (reader.Peek() != -1)
             {
                 var current = reader.ReadLine();
-                section = ParseLine(current, section, properties, affixTuples, patterns);
+                section = ParseLine(current, section, properties, affixes, patterns);
             }
-
-            affixes = affixTuples.OrderBy(t => t.Item1).Select(t => t.Item2).ToList();
 
             return new SpellChecker(patterns, affixes, properties);
         }
@@ -204,7 +198,7 @@ namespace Kurdspell
             string current,
             ParseSection section,
             Dictionary<string, string> properties,
-            List<Tuple<int, Affix>> affixes,
+            List<Affix> affixes,
             List<Pattern> patterns)
         {
             if (current.StartsWith("~"))
@@ -251,11 +245,11 @@ namespace Kurdspell
                     case ParseSection.Affixes:
                         {
                             var parts = current.Split(':');
-                            if (parts.Length == 2 && int.TryParse(parts[0], out var number))
+                            if (parts.Length == 2)
                             {
                                 var name = parts[0].Trim().ToLowerInvariant(); // Affix names are case-insensitive
                                 var variants = parts[1].Split(',').Select(v => v.Trim()).ToArray();
-                                affixes.Add(new Tuple<int, Affix>(number, new Affix(name, variants)));
+                                affixes.Add(new Affix(name, variants));
                             }
                         }
                         break;
