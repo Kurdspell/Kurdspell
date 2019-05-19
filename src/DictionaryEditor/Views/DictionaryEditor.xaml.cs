@@ -61,23 +61,34 @@ namespace DictionaryEditor.Views
             };
         }
 
-        private void PatternPart_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var button = sender as FrameworkElement;
-            var part = button.Tag as PatternPartViewModel;
-            if (part != null && part.IsAffix)
-            {
-                MessageBox.Show(part.Hint);
-            }
-        }
-
         private void PatternsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var pattern = patternsList.SelectedItem as PatternViewModel;
             if (pattern == null) return;
 
-            var dialog = new PatternDialog(_viewModel.SpellChecker, pattern);
+            var dialog = new PatternDialog(pattern, _viewModel);
             dialog.ShowDialog();
+        }
+
+        private void PatternPart_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var button = sender as FrameworkElement;
+            if (button.Tag is PatternPartViewModel part && part.IsAffix)
+            {
+                e.Handled = true;
+
+                var affix = _viewModel.Affixes.First(a => a.Name == part.Text);
+                var dialog = new AffixDialog(affix, _viewModel);
+                dialog.ShowDialog();
+                if (dialog.DialogResult == true)
+                {
+                    var newAffix = dialog.GetAffix();
+                    if (newAffix != affix)
+                    {
+                        _viewModel.ReplaceAffix(affix, newAffix);
+                    }
+                }
+            }
         }
     }
 }

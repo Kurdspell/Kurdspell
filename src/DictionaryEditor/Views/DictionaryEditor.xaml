@@ -3,9 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:helpers="clr-namespace:DictionaryEditor.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <DataTemplate x:Key="affixTemplate">
+            <Button Tag="{Binding }" PreviewMouseDoubleClick="PatternPart_PreviewMouseDoubleClick">
+                <Button.Template>
+                    <ControlTemplate>
+                        <TextBlock ToolTip="{Binding Hint}" Text="{Binding Text, Mode=OneTime, StringFormat='[{0}]'}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="IndianRed" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </DataTemplate>
 
+        <DataTemplate x:Key="normalTemplate">
+            <TextBlock Text="{Binding Text}" />
+        </DataTemplate>
+        
+        <helpers:PatternPartTemplateSelector x:Key="patternPartTemplateSelector"
+                                             Affix="{StaticResource affixTemplate}"
+                                             Normal="{StaticResource normalTemplate}"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
@@ -22,40 +51,18 @@
         
         <ListView x:Name="patternsList" ItemsSource="{Binding Patterns}" Grid.Row="1"
                   SelectedItem="{Binding SelectedPattern}"
+                  IsSynchronizedWithCurrentItem="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   MouseDoubleClick="PatternsList_MouseDoubleClick">
            
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ItemsControl ItemsSource="{Binding Parts}">
+                    <ItemsControl ItemsSource="{Binding Parts}" ItemTemplateSelector="{StaticResource patternPartTemplateSelector}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Tag="{Binding }" MouseDoubleClick="PatternPart_MouseDoubleClick">
-                                    <Button.Template>
-                                        <ControlTemplate>
-                                            <TextBlock Text="{Binding Text}"
-                                                       ToolTipService.IsEnabled="{Binding IsAffix}"
-                                                       ToolTip="{Binding Hint}">
-                                                <TextBlock.Style>
-                                                    <Style TargetType="TextBlock">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="IndianRed" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </DataTemplate>
             </ListView.ItemTemplate>

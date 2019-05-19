@@ -1,18 +1,9 @@
 ﻿using DictionaryEditor.ViewModels;
 using Kurdspell;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DictionaryEditor.Views
 {
@@ -22,13 +13,13 @@ namespace DictionaryEditor.Views
     public partial class PatternDialog : Window
     {
         private readonly PatternViewModel _viewModel;
-        private readonly SpellChecker _spellChecker;
+        private readonly DictionaryEditorViewModel _parent;
 
-        public PatternDialog(SpellChecker spellChecker, PatternViewModel viewModel)
+        public PatternDialog(PatternViewModel viewModel, DictionaryEditorViewModel parent)
         {
             InitializeComponent();
             DataContext = _viewModel = viewModel;
-            _spellChecker = spellChecker;
+            _parent = parent;
         }
 
         private bool BraceIsProperlyClosed(string text, int startIndex)
@@ -52,6 +43,7 @@ namespace DictionaryEditor.Views
             bool modified = false;
             var position = patternTextBox.CaretIndex;
 
+            // Automatically close braces
             foreach (var change in e.Changes)
             {
                 if (change.RemovedLength > 0) continue;
@@ -64,15 +56,16 @@ namespace DictionaryEditor.Views
                 }
             }
 
-            for (int i = 0; i < _viewModel.Template.Length; i++)
-            {
-                var index = _hindiNumbers.IndexOf(_viewModel.Template[i]);
-                if (index != -1)
-                {
-                    _viewModel.Template = _viewModel.Template.Replace(_hindiNumbers[index], _arabicNumbers[index]);
-                    modified = true;
-                }
-            }
+            // Convert Hindi Numbers to Arabic numbers
+            //for (int i = 0; i < _viewModel.Template.Length; i++)
+            //{
+            //    var index = _hindiNumbers.IndexOf(_viewModel.Template[i]);
+            //    if (index != -1)
+            //    {
+            //        _viewModel.Template = _viewModel.Template.Replace(_hindiNumbers[index], _arabicNumbers[index]);
+            //        modified = true;
+            //    }
+            //}
 
             if (modified)
             {
@@ -81,7 +74,7 @@ namespace DictionaryEditor.Views
             }
 
             similarsList.ItemsSource =
-                _spellChecker.GetPatterns()
+                _parent.Patterns
                              .Select(p => new
                              {
                                  Distance = Levenshtein.GetDistanceOneRow(_viewModel.Template, p.Template),

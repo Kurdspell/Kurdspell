@@ -32,7 +32,7 @@ namespace Kurdspell
         public SpellChecker(List<Pattern> patterns, List<Affix> affixes, Dictionary<string, string> properties = null)
         {
             _patterns = patterns;
-            _affixes = affixes.ToDictionary(a => "{" + a.Name + "}");
+            _affixes = affixes.ToDictionary(a => a.Name);
             _dictionary = new Dictionary<char, List<Pattern>>();
             Properties = properties ?? new Dictionary<string, string>();
 
@@ -105,6 +105,32 @@ namespace Kurdspell
             AddPattern(pattern);
         }
 
+        public void AddToDictionary(Pattern pattern)
+        {
+            _patterns.Add(pattern);
+            AddPattern(pattern);
+        }
+
+        public void ReplacePattern(Pattern pattern, Pattern changed)
+        {
+            var index = _patterns.IndexOf(pattern);
+            if (index > 0)
+            {
+                _patterns.RemoveAt(index);
+                _patterns.Insert(index, changed);
+                _dictionary[pattern.Template[0]].Remove(pattern);
+                AddToDictionary(changed);
+            }
+        }
+
+        public void RemoveFromDictionary(Pattern pattern)
+        {
+            if (pattern.Equals(default(Pattern))) return;
+
+            _patterns.Remove(pattern);
+            _dictionary[pattern.Template[0]].Remove(pattern);
+        }
+
         private void AddPattern(Pattern pattern)
         {
             if (!_dictionary.ContainsKey(pattern.Template[0]))
@@ -113,6 +139,16 @@ namespace Kurdspell
             }
 
             _dictionary[pattern.Template[0]].Add(pattern);
+        }
+
+        public void AddAffix(Affix affix)
+        {
+            _affixes.Add(affix.Name, affix);
+        }
+
+        public void RemoveAffix(Affix affix)
+        {
+            _affixes.Remove(affix.Name);
         }
 
         #region Parsing Dictionary

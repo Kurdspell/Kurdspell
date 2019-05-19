@@ -8,11 +8,16 @@ namespace DictionaryEditor.ViewModels
     public class PatternViewModel : BindableBase
     {
         private readonly IReadOnlyDictionary<string, Affix> _affixes;
+        private readonly SpellChecker _spellChecker;
         private static readonly IReadOnlyList<string> _emptyList = new List<string>();
 
-        public PatternViewModel(Pattern p, IReadOnlyDictionary<string, Affix> affixes)
+        public PatternViewModel(
+            Pattern p,
+            IReadOnlyDictionary<string, Affix> affixes,
+            SpellChecker spellChecker)
         {
             _affixes = affixes;
+            _spellChecker = spellChecker;
             Pattern = p;
             _template = p.Template;
             SetParts(p);
@@ -45,7 +50,10 @@ namespace DictionaryEditor.ViewModels
 
                     try
                     {
-                        Pattern = new Pattern(_template);
+                        var changed = new Pattern(_template);
+                        _spellChecker.RemoveFromDictionary(Pattern);
+                        _spellChecker.AddToDictionary(changed);
+                        Pattern = changed;
                         SetParts(Pattern);
                     }
                     catch (Exception ex)
@@ -97,8 +105,10 @@ namespace DictionaryEditor.ViewModels
             Possibilities = possibilities;
         }
 
-        public bool IsAffix { get; }
+        private readonly string _text;
         public string Text { get; }
+        public bool IsAffix { get; }
+
         public IReadOnlyCollection<string> Possibilities { get; }
         public string Hint => string.Join(",", Possibilities);
     }
