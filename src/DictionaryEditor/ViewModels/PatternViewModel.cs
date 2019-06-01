@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace DictionaryEditor.ViewModels
 {
@@ -21,6 +22,11 @@ namespace DictionaryEditor.ViewModels
             Pattern = p;
             _template = p.Template;
             SetParts(p);
+        }
+
+        internal PatternViewModel Clone()
+        {
+            return new PatternViewModel(Pattern, _affixes, _spellChecker);
         }
 
         private ObservableCollection<PatternPartViewModel> _parts = new ObservableCollection<PatternPartViewModel>();
@@ -56,7 +62,7 @@ namespace DictionaryEditor.ViewModels
                         Pattern = changed;
                         SetParts(Pattern);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         isValid = false;
                     }
@@ -105,7 +111,6 @@ namespace DictionaryEditor.ViewModels
             Possibilities = possibilities;
         }
 
-        private readonly string _text;
         public string Text { get; }
         public bool IsAffix { get; }
 

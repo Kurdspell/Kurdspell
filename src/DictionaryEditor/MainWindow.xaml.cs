@@ -1,5 +1,4 @@
-﻿using DictionaryEditor.Views;
-using Kurdspell;
+﻿using Kurdspell;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -12,8 +11,6 @@ namespace DictionaryEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private SpellChecker _spellChecker;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -63,7 +60,8 @@ namespace DictionaryEditor
 
         private async void SaveDictionaryMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (_spellChecker == null) return;
+            if (!(mainContent.Content is Views.DictionaryEditor editor))
+                return;
 
             var dialog = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
             dialog.Filter = "Text File (*.txt)|*.txt|All Files (*.*)|*.*";
@@ -73,7 +71,14 @@ namespace DictionaryEditor
             {
                 try
                 {
-                    await _spellChecker.SaveAsync(dialog.FileName);
+                    var vm = editor.DataContext as ViewModels.DictionaryEditorViewModel;
+
+                    var spellChecker = new SpellChecker(
+                        vm.GetPatterns(),
+                        vm.GetAffixes(),
+                        vm.GetProperties());
+
+                    await spellChecker.SaveAsync(dialog.FileName);
                 }
                 catch (Exception ex)
                 {
@@ -87,8 +92,8 @@ namespace DictionaryEditor
         {
             try
             {
-                _spellChecker = await SpellChecker.FromFileAsync(path);
-                mainContent.Content = new Views.DictionaryEditor(_spellChecker);
+                var spellChecker = await SpellChecker.FromFileAsync(path);
+                mainContent.Content = new Views.DictionaryEditor(spellChecker);
             }
             catch (Exception ex)
             {

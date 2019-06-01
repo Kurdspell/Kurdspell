@@ -1,5 +1,6 @@
 ﻿using Kurdspell;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -7,10 +8,12 @@ namespace DictionaryEditor.ViewModels
 {
     public class DictionaryEditorViewModel : BindableBase
     {
-        private readonly SpellChecker _spellChecker;
+        private readonly Dictionary<string, string> _properties;
+
         public DictionaryEditorViewModel(SpellChecker spellChecker)
         {
-            _spellChecker = spellChecker;
+            _properties = spellChecker.Properties;
+
             Patterns = new ObservableCollection<PatternViewModel>(
                           spellChecker.GetPatterns()
                                        .Select(p => new PatternViewModel(p, spellChecker.GetAffixes(), spellChecker))
@@ -40,12 +43,9 @@ namespace DictionaryEditor.ViewModels
         }
 
         public void ReplaceAffix(Affix current, Affix changed)
-        {;
+        {
             var index = Affixes.IndexOf(current);
-            Affixes.Remove(current);
-            Affixes.Insert(index, changed);
-            _spellChecker.RemoveAffix(current);
-            _spellChecker.AddAffix(changed);
+            Affixes[index] = changed;
 
             foreach (var pattern in Patterns)
             {
@@ -56,11 +56,15 @@ namespace DictionaryEditor.ViewModels
 
                     if (pattern.Parts[i].Text == current.Name)
                     {
-                        pattern.Template = pattern.Template.Replace("{" + current.Name + "}", "{" + changed.Name + "}");
+                        pattern.Template = pattern.Template.Replace("[" + current.Name + "]", "[" + changed.Name + "]");
                         break;
                     }
                 }
             }
         }
+
+        public List<Pattern> GetPatterns() => Patterns.Select(p => p.Pattern).ToList();
+        public List<Affix> GetAffixes() => Affixes.ToList();
+        public Dictionary<string, string> GetProperties() => _properties;
     }
 }

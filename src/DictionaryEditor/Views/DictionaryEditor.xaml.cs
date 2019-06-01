@@ -68,6 +68,11 @@ namespace DictionaryEditor.Views
 
             var dialog = new PatternDialog(pattern, _viewModel);
             dialog.ShowDialog();
+            if (dialog.Result == true)
+            {
+                var index = _viewModel.Patterns.IndexOf(pattern);
+                _viewModel.Patterns[index] = dialog.Pattern;
+            }
         }
 
         private void PatternPart_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)

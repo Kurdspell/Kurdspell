@@ -12,13 +12,15 @@ namespace DictionaryEditor.Views
     /// </summary>
     public partial class PatternDialog : Window
     {
-        private readonly PatternViewModel _viewModel;
         private readonly DictionaryEditorViewModel _parent;
+        private readonly int _originalHashCode;
 
         public PatternDialog(PatternViewModel viewModel, DictionaryEditorViewModel parent)
         {
+            _originalHashCode = viewModel.GetHashCode();
+
             InitializeComponent();
-            DataContext = _viewModel = viewModel;
+            DataContext = Pattern = viewModel.Clone();
             _parent = parent;
         }
 
@@ -26,19 +28,22 @@ namespace DictionaryEditor.Views
         {
             for (int i = startIndex; i < text.Length; i++)
             {
-                if (text[i] == '}') return true;
-                if (text[i] == '{') return false;
+                if (text[i] == ']') return true;
+                if (text[i] == '[') return false;
             }
 
             return false;
         }
+
+        public bool? Result { get; private set; }
+        public PatternViewModel Pattern { get; }
 
         private readonly List<char> _hindiNumbers = new List<char> { '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' };
         private readonly char[] _arabicNumbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         private void PatternTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(_viewModel.Template)) return;
+            if (string.IsNullOrWhiteSpace(Pattern.Template)) return;
 
             bool modified = false;
             var position = patternTextBox.CaretIndex;
@@ -48,10 +53,10 @@ namespace DictionaryEditor.Views
             {
                 if (change.RemovedLength > 0) continue;
 
-                var text = _viewModel.Template.Substring(change.Offset, change.AddedLength);
-                if (text.EndsWith("{") && !BraceIsProperlyClosed(_viewModel.Template, change.Offset + change.AddedLength))
+                var text = Pattern.Template.Substring(change.Offset, change.AddedLength);
+                if (text.EndsWith("[") && !BraceIsProperlyClosed(Pattern.Template, change.Offset + change.AddedLength))
                 {
-                    _viewModel.Template = _viewModel.Template.Insert(position, "}");
+                    Pattern.Template = Pattern.Template.Insert(position, "]");
                     modified = true;
                 }
             }
@@ -75,15 +80,22 @@ namespace DictionaryEditor.Views
 
             similarsList.ItemsSource =
                 _parent.Patterns
+                             .Where(p => p.GetHashCode() != _originalHashCode)
                              .Select(p => new
                              {
-                                 Distance = Levenshtein.GetDistanceOneRow(_viewModel.Template, p.Template),
+                                 Distance = Levenshtein.GetDistanceOneRow(Pattern.Template, p.Template),
                                  Pattern = p
                              })
                              .Where(i => i.Distance < 3)
                              .OrderBy(i => i.Distance)
                              .Select(i => i.Pattern.Template)
                              .ToList();
+        }
+
+        private void OkayButton_Click(object sender, RoutedEventArgs e)
+        {
+            Result = true;
+            Close();
         }
     }
 }

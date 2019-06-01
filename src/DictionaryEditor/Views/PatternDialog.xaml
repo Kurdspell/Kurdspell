@@ -15,6 +15,8 @@
             <RowDefinition Height="5" />
             <RowDefinition Height="3*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <controls:LabeledControl Label="Pattern: ">
@@ -63,5 +65,11 @@
 
         <TextBlock Text="{Binding ElementName=variantsList, Path=Items.Count}"
                    Grid.Row="5"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="7" HorizontalAlignment="Right">
+            <Button Content="Cancel" IsCancel="True"/>
+            <TextBlock Width="5" />
+            <Button x:Name="okayButton" Click="OkayButton_Click" Content="Okay" IsDefault="True"/>
+        </StackPanel>
     </Grid>
 </Window>
