@@ -20,6 +20,11 @@ namespace DictionaryEditor.Views
         {
             InitializeComponent();
             DataContext = _viewModel = new DictionaryEditorViewModel(spellChecker);
+            Loaded += DictionaryEditor_Loaded;
+        }
+
+        private void DictionaryEditor_Loaded(object sender, RoutedEventArgs e)
+        {
             FilterByTextBox(patternsList, filterPatternsList);
         }
 
@@ -81,6 +86,18 @@ namespace DictionaryEditor.Views
                     var newAffix = dialog.GetAffix();
                     _viewModel.ReplaceAffix(affix, newAffix);
                 }
+            }
+        }
+
+        private void AddPatternButton_Click(object sender, RoutedEventArgs e)
+        {
+            var pattern = _viewModel.CreatePattern();
+
+            var dialog = new PatternDialog(pattern, _viewModel);
+            dialog.ShowDialog();
+            if (dialog.Result == true)
+            {
+                _viewModel.Patterns.Add(dialog.Pattern);
             }
         }
     }

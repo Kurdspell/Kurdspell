@@ -43,13 +43,21 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="filterPatternsList" TextChanged="FilterPatternsList_TextChanged" />
+        <ToolBar Grid.ColumnSpan="2">
+            <Button Content="Add Pattern" x:Name="addPatternButton" Click="AddPatternButton_Click" />
+            <Button Content="Remove Pattern" x:Name="removePatternButton"
+                    Command="{Binding RemovePatternCommand}"
+                    CommandParameter="{Binding ElementName=patternsList, Path=SelectedItem}" />
+        </ToolBar>
         
-        <ListView x:Name="patternsList" ItemsSource="{Binding Patterns}" Grid.Row="1"
+        <TextBox x:Name="filterPatternsList" TextChanged="FilterPatternsList_TextChanged" Grid.Row="1" />
+        
+        <ListView x:Name="patternsList" ItemsSource="{Binding Patterns}" Grid.Row="2"
                   SelectedItem="{Binding SelectedPattern}"
                   IsSynchronizedWithCurrentItem="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
@@ -68,15 +76,15 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <TextBlock Grid.Row="2" Text="{Binding ElementName=patternsList, Path=Items.Count, StringFormat='N0'}" />
+        <TextBlock Grid.Row="3" Text="{Binding ElementName=patternsList, Path=Items.Count, StringFormat='N0'}" />
 
-        <TextBox x:Name="filterVariantsList" Grid.Column="1" TextChanged="FilterVariantsList_TextChanged" />
+        <TextBox x:Name="filterVariantsList" Grid.Column="1" Grid.Row="1" TextChanged="FilterVariantsList_TextChanged" />
         
-        <ListView x:Name="variantsList" ItemsSource="{Binding SelectedPattern.Variants}" Grid.Row="1" Grid.Column="1">
+        <ListView x:Name="variantsList" ItemsSource="{Binding SelectedPattern.Variants}" Grid.Row="2" Grid.Column="1">
             
         </ListView>
 
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ElementName=variantsList, Path=Items.Count, StringFormat='N0'}" />
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ElementName=variantsList, Path=Items.Count, StringFormat='N0'}" />
 
     </Grid>
 </UserControl>

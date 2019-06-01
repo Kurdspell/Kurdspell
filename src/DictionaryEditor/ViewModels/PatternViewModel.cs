@@ -72,7 +72,8 @@ namespace DictionaryEditor.ViewModels
         {
             _parts.Clear();
 
-            for (int i = 0; i < pattern.Parts.Count; i++)
+            var count = pattern.Parts?.Count ?? 0;
+            for (int i = 0; i < count; i++)
             {
                 var part = pattern.Parts[i];
                 if (pattern.IsPartAnAffixFlags[i])
