@@ -1,10 +1,10 @@
-﻿using System.Linq;
+﻿using Kurdspell;
+using System.Linq;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Timers;
-using Kurdspell;
 
 namespace Sample3
 {

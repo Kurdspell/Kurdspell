@@ -1,0 +1,58 @@
+﻿<Window x:Class="DictionaryEditor.Views.AffixDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DictionaryEditor"
+        xmlns:controls="clr-namespace:DictionaryEditor.Controls"
+        mc:Ignorable="d"
+        Title="AffixDialog" Height="450" Width="800">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
+            <RowDefinition />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" /> 
+            <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:LabeledControl Label="Name: ">
+            <TextBox Text="{Binding Name}" FontSize="16" FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}" />
+        </controls:LabeledControl>
+
+        <StackPanel HorizontalAlignment="Right" Grid.Row="2" Orientation="Horizontal">
+            <Button Content="Remove" x:Name="removePosibilityButton" Click="RemovePosibilityButton_Click" />
+            <TextBlock Width="10" />
+            <Button Content="Add" x:Name="addPosibilityButton" Click="AddPosibilityButton_Click" />
+        </StackPanel>
+        
+        <DataGrid Grid.Row="4"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False" 
+                  CanUserDeleteRows="True"
+                  SelectedItem="{Binding SelectedPossibility}"
+                  ItemsSource="{Binding Possibilities}"
+                  FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}">
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Value}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <controls:LabeledControl Label="Stats: " Grid.Row="6">
+            <StackPanel>
+                <TextBlock Text="{Binding NoOfPatterns, StringFormat='Number Of patterns: {0}'}" />
+            </StackPanel>
+        </controls:LabeledControl>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Right">
+            <Button Content="Cancel" IsCancel="True"/>
+            <TextBlock Width="5" />
+            <Button x:Name="okayButton" Click="OkayButton_Click" Content="Okay" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

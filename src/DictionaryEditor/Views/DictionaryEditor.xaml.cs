@@ -1,20 +1,11 @@
 ﻿using DictionaryEditor.ViewModels;
 using Kurdspell;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DictionaryEditor.Views
 {
@@ -61,23 +52,36 @@ namespace DictionaryEditor.Views
             };
         }
 
-        private void PatternPart_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var button = sender as FrameworkElement;
-            var part = button.Tag as PatternPartViewModel;
-            if (part != null && part.IsAffix)
-            {
-                MessageBox.Show(part.Hint);
-            }
-        }
-
         private void PatternsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var pattern = patternsList.SelectedItem as PatternViewModel;
             if (pattern == null) return;
 
-            var dialog = new PatternDialog(_viewModel.SpellChecker, pattern);
+            var dialog = new PatternDialog(pattern, _viewModel);
             dialog.ShowDialog();
+            if (dialog.Result == true)
+            {
+                var index = _viewModel.Patterns.IndexOf(pattern);
+                _viewModel.Patterns[index] = dialog.Pattern;
+            }
+        }
+
+        private void PatternPart_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var button = sender as FrameworkElement;
+            if (button.Tag is PatternPartViewModel part && part.IsAffix)
+            {
+                e.Handled = true;
+
+                var affix = _viewModel.Affixes.First(a => a.Name == part.Text);
+                var dialog = new AffixDialog(affix, _viewModel);
+                dialog.ShowDialog();
+                if (dialog.DialogResult == true)
+                {
+                    var newAffix = dialog.GetAffix();
+                    _viewModel.ReplaceAffix(affix, newAffix);
+                }
+            }
         }
     }
 }

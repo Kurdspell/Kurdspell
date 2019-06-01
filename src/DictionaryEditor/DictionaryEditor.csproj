@@ -60,8 +60,13 @@
     </ApplicationDefinition>
     <Compile Include="Controls\LabeledControl.cs" />
     <Compile Include="Helpers\Mvvm.cs" />
+    <Compile Include="Helpers\PatternPartTemplateSelector.cs" />
+    <Compile Include="ViewModels\AffixDialogViewModel.cs" />
     <Compile Include="ViewModels\DictionaryEditorViewModel.cs" />
     <Compile Include="ViewModels\PatternViewModel.cs" />
+    <Compile Include="Views\AffixDialog.xaml.cs">
+      <DependentUpon>AffixDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DictionaryEditor.xaml.cs">
       <DependentUpon>DictionaryEditor.xaml</DependentUpon>
     </Compile>
@@ -83,6 +88,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AffixDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\DictionaryEditor.xaml">
       <SubType>Designer</SubType>

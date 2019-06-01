@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ namespace Kurdspell
         public SpellChecker(List<Pattern> patterns, List<Affix> affixes, Dictionary<string, string> properties = null)
         {
             _patterns = patterns;
-            _affixes = affixes.ToDictionary(a => "{" + a.Name + "}");
+            _affixes = affixes.ToDictionary(a => a.Name);
             _dictionary = new Dictionary<char, List<Pattern>>();
             Properties = properties ?? new Dictionary<string, string>();
 

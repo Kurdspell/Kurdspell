@@ -9,6 +9,9 @@ namespace Kurdspell
 {
     public struct Pattern
     {
+        public const char OpenBracket = '[';
+        public const char CloseBracket = ']';
+
         public Pattern(string template)
         {
             Template = template.ToLower();
@@ -22,7 +25,7 @@ namespace Kurdspell
 
             while (index < Template.Length)
             {
-                if (Template[index] == '{')
+                if (Template[index] == OpenBracket)
                 {
                     if (start != index)
                     {
@@ -32,19 +35,19 @@ namespace Kurdspell
                     }
 
                     start = index;
-                    while (Template[++index] != '}')
+                    while (Template[++index] != CloseBracket)
                     {
                         if (index == Template.Length - 1)
-                            throw new ArgumentException($"Expected '}}'. Template: {Template}");
+                            throw new ArgumentException($"Expected '{CloseBracket}'. Template: {Template}");
                     }
 
-                    var text = Template.Substring(start, index - start + 1);
+                    var text = Template.Substring(start + 1, index - start - 1);
                     parts.Add(text);
                     flags.Add(true);
 
                     start = index + 1;
                 }
-                else if (index == template.Length - 1 && Template[index] != '}')
+                else if (index == template.Length - 1 && Template[index] != CloseBracket)
                 {
                     parts.Add(Template.Substring(start, index + 1 - start));
                     flags.Add(false);
@@ -88,7 +91,7 @@ namespace Kurdspell
                     {
                         return wLength == 1;
                     }
-                    else if (_secondChar == '{')
+                    else if (_secondChar == OpenBracket)
                     {
                         cont = false;
                     }
@@ -107,7 +110,7 @@ namespace Kurdspell
                     {
                         return wLength == 2;
                     }
-                    else if (_thirdChar == '{')
+                    else if (_thirdChar == OpenBracket)
                     {
                         charIndex = 2;
                         cont = false;
@@ -126,7 +129,7 @@ namespace Kurdspell
                     {
                         return wLength == 3;
                     }
-                    else if (_fourthChar == '{')
+                    else if (_fourthChar == OpenBracket)
                     {
                         charIndex = 3;
                         cont = false;
@@ -145,7 +148,7 @@ namespace Kurdspell
                     {
                         return wLength == 4;
                     }
-                    else if (_fifthChar == '{')
+                    else if (_fifthChar == OpenBracket)
                     {
                         cont = false;
                     }
@@ -163,7 +166,7 @@ namespace Kurdspell
                     for (; charIndex < Template.Length; charIndex++)
                     {
                         var current = Template[charIndex];
-                        if (current == '{')
+                        if (current == OpenBracket)
                         {
                             break;
                         }
@@ -274,20 +277,6 @@ namespace Kurdspell
             for (int i = 0; i < vLength; i++)
             {
                 if (variant[i] != text[i + charIndex])
-                    return false;
-            }
-
-            return true;
-        }
-
-        private static bool CanBeTheSame(StringBuilder builder, string text)
-        {
-            if (builder.Length > text.Length)
-                return false;
-
-            for (int i = 0; i < builder.Length; i++)
-            {
-                if (builder[i] != text[i])
                     return false;
             }
 

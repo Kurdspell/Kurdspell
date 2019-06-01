@@ -1,9 +1,9 @@
-﻿using DictionaryEditor.Views;
-using Kurdspell;
+﻿using Kurdspell;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace DictionaryEditor
 {
@@ -12,14 +12,15 @@ namespace DictionaryEditor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private SpellChecker _spellChecker;
+        private bool _canSave = false;
+        private string _filePath = null;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private async void OpenDictionaryMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void OpenDictionaryCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             var dialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog();
             dialog.Filter = "All Files (*.*)|*.*";
@@ -61,9 +62,9 @@ namespace DictionaryEditor
             }
         }
 
-        private async void SaveDictionaryMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void SaveDictionaryAsCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_spellChecker == null) return;
+            if (_canSave == false) return;
 
             var dialog = new Ookii.Dialogs.Wpf.VistaSaveFileDialog();
             dialog.Filter = "Text File (*.txt)|*.txt|All Files (*.*)|*.*";
@@ -71,15 +72,37 @@ namespace DictionaryEditor
 
             if (result == true)
             {
-                try
-                {
-                    await _spellChecker.SaveAsync(dialog.FileName);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.ToString());
-                    MessageBox.Show(ex.Message);
-                }
+                await Save(dialog.FileName);
+            }
+        }
+
+        private async void SaveDictionaryCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (_canSave)
+            {
+                await Save(_filePath);
+            }
+        }
+
+        private async Task Save(string path)
+        {
+            try
+            {
+                var editor = mainContent.Content as Views.DictionaryEditor;
+
+                var vm = editor.DataContext as ViewModels.DictionaryEditorViewModel;
+
+                var spellChecker = new SpellChecker(
+                    vm.GetPatterns(),
+                    vm.GetAffixes(),
+                    vm.GetProperties());
+
+                await spellChecker.SaveAsync(path);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -87,8 +110,10 @@ namespace DictionaryEditor
         {
             try
             {
-                _spellChecker = await SpellChecker.FromFileAsync(path);
-                mainContent.Content = new Views.DictionaryEditor(_spellChecker);
+                var spellChecker = await SpellChecker.FromFileAsync(path);
+                mainContent.Content = new Views.DictionaryEditor(spellChecker);
+                _canSave = true;
+                _filePath = path;
             }
             catch (Exception ex)
             {

@@ -10,12 +10,19 @@ namespace DictionaryEditor.ViewModels
         private readonly IReadOnlyDictionary<string, Affix> _affixes;
         private static readonly IReadOnlyList<string> _emptyList = new List<string>();
 
-        public PatternViewModel(Pattern p, IReadOnlyDictionary<string, Affix> affixes)
+        public PatternViewModel(
+            Pattern p,
+            IReadOnlyDictionary<string, Affix> affixes)
         {
             _affixes = affixes;
             Pattern = p;
             _template = p.Template;
             SetParts(p);
+        }
+
+        internal PatternViewModel Clone()
+        {
+            return new PatternViewModel(Pattern, _affixes);
         }
 
         private ObservableCollection<PatternPartViewModel> _parts = new ObservableCollection<PatternPartViewModel>();
@@ -48,7 +55,7 @@ namespace DictionaryEditor.ViewModels
                         Pattern = new Pattern(_template);
                         SetParts(Pattern);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         isValid = false;
                     }
@@ -97,8 +104,9 @@ namespace DictionaryEditor.ViewModels
             Possibilities = possibilities;
         }
 
-        public bool IsAffix { get; }
         public string Text { get; }
+        public bool IsAffix { get; }
+
         public IReadOnlyCollection<string> Possibilities { get; }
         public string Hint => string.Join(",", Possibilities);
     }

@@ -1,18 +1,9 @@
 ﻿using DictionaryEditor.ViewModels;
 using Kurdspell;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace DictionaryEditor.Views
 {
@@ -21,58 +12,65 @@ namespace DictionaryEditor.Views
     /// </summary>
     public partial class PatternDialog : Window
     {
-        private readonly PatternViewModel _viewModel;
-        private readonly SpellChecker _spellChecker;
+        private readonly DictionaryEditorViewModel _parent;
+        private readonly int _originalHashCode;
 
-        public PatternDialog(SpellChecker spellChecker, PatternViewModel viewModel)
+        public PatternDialog(PatternViewModel viewModel, DictionaryEditorViewModel parent)
         {
+            _originalHashCode = viewModel.GetHashCode();
+
             InitializeComponent();
-            DataContext = _viewModel = viewModel;
-            _spellChecker = spellChecker;
+            DataContext = Pattern = viewModel.Clone();
+            _parent = parent;
         }
 
         private bool BraceIsProperlyClosed(string text, int startIndex)
         {
             for (int i = startIndex; i < text.Length; i++)
             {
-                if (text[i] == '}') return true;
-                if (text[i] == '{') return false;
+                if (text[i] == ']') return true;
+                if (text[i] == '[') return false;
             }
 
             return false;
         }
+
+        public bool? Result { get; private set; }
+        public PatternViewModel Pattern { get; }
 
         private readonly List<char> _hindiNumbers = new List<char> { '٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩' };
         private readonly char[] _arabicNumbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         private void PatternTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(_viewModel.Template)) return;
+            if (string.IsNullOrWhiteSpace(Pattern.Template)) return;
 
             bool modified = false;
             var position = patternTextBox.CaretIndex;
 
+            // Automatically close braces
             foreach (var change in e.Changes)
             {
                 if (change.RemovedLength > 0) continue;
 
-                var text = _viewModel.Template.Substring(change.Offset, change.AddedLength);
-                if (text.EndsWith("{") && !BraceIsProperlyClosed(_viewModel.Template, change.Offset + change.AddedLength))
+                var text = Pattern.Template.Substring(change.Offset, change.AddedLength);
+                if (text.EndsWith("[") && !BraceIsProperlyClosed(Pattern.Template, change.Offset + change.AddedLength))
                 {
-                    _viewModel.Template = _viewModel.Template.Insert(position, "}");
+                    Pattern.Template = Pattern.Template.Insert(position, "]");
                     modified = true;
                 }
             }
 
-            for (int i = 0; i < _viewModel.Template.Length; i++)
-            {
-                var index = _hindiNumbers.IndexOf(_viewModel.Template[i]);
-                if (index != -1)
-                {
-                    _viewModel.Template = _viewModel.Template.Replace(_hindiNumbers[index], _arabicNumbers[index]);
-                    modified = true;
-                }
-            }
+            // Convert Hindi Numbers to Arabic numbers
+            //for (int i = 0; i < _viewModel.Template.Length; i++)
+            //{
+            //    var index = _hindiNumbers.IndexOf(_viewModel.Template[i]);
+            //    if (index != -1)
+            //    {
+            //        _viewModel.Template = _viewModel.Template.Replace(_hindiNumbers[index], _arabicNumbers[index]);
+            //        modified = true;
+            //    }
+            //}
 
             if (modified)
             {
@@ -81,16 +79,23 @@ namespace DictionaryEditor.Views
             }
 
             similarsList.ItemsSource =
-                _spellChecker.GetPatterns()
+                _parent.Patterns
+                             .Where(p => p.GetHashCode() != _originalHashCode)
                              .Select(p => new
                              {
-                                 Distance = Levenshtein.GetDistanceOneRow(_viewModel.Template, p.Template),
+                                 Distance = Levenshtein.GetDistanceOneRow(Pattern.Template, p.Template),
                                  Pattern = p
                              })
                              .Where(i => i.Distance < 3)
                              .OrderBy(i => i.Distance)
                              .Select(i => i.Pattern.Template)
                              .ToList();
+        }
+
+        private void OkayButton_Click(object sender, RoutedEventArgs e)
+        {
+            Result = true;
+            Close();
         }
     }
 }

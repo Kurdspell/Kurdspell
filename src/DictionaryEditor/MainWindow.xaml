@@ -10,12 +10,24 @@
         Width="800"
         AllowDrop="True"
         Drop="Window_Drop">
-    
+
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="OpenDictionaryCommandExecuted"/>
+        <CommandBinding Command="Save" Executed="SaveDictionaryCommandExecuted"/>
+        <CommandBinding Command="SaveAs" Executed="SaveDictionaryAsCommandExecuted"/>
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
+    </Window.InputBindings>
+
     <DockPanel LastChildFill="True">
         <Menu x:Name="mainMenu" DockPanel.Dock="Top">
             <MenuItem x:Name="fileMenuItem" Header="_File">
-                <MenuItem x:Name="openDictionaryMenuItem" Header="_Open Dictionary" Click="OpenDictionaryMenuItem_Click" />
-                <MenuItem x:Name="saveDictionaryMenuItem" Header="_Save Dictionary" Click="SaveDictionaryMenuItem_Click" />
+                <MenuItem x:Name="openDictionaryMenuItem" Header="_Open" Command="Open" InputGestureText="Ctrl+O" />
+                <MenuItem x:Name="saveDictionaryMenuItem" Header="_Save" Command="Save" InputGestureText="Ctrl+S" />
+                <MenuItem x:Name="saveAsDictionaryMenuItem" Header="Save _As" Command="SaveAs" />
             </MenuItem>
 
             <MenuItem x:Name="viewMenuItem" Header="_View">
@@ -26,7 +38,7 @@
 
         <ContentControl x:Name="mainContent"
                         FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}">
-            
+
             <TextBlock Text="Open a dictionary file by dropping it here"
                        TextAlignment="Center"
                        FlowDirection="LeftToRight"
