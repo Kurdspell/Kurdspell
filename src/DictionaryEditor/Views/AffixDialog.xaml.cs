@@ -34,7 +34,7 @@ namespace DictionaryEditor.Views
             }
         }
 
-        public Affix GetAffix() => 
+        public Affix GetAffix() =>
             new Affix(_viewModel.Name, _viewModel.Possibilities.Select(p => p.Value).ToArray());
 
         private void OkayButton_Click(object sender, RoutedEventArgs e)

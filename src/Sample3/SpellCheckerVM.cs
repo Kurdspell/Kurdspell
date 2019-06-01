@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Kurdspell;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System;
-using System.IO;
-using Kurdspell;
 
 namespace Sample3
 {
