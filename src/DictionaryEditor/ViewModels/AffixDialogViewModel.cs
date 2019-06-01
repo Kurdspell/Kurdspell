@@ -41,5 +41,7 @@ namespace DictionaryEditor.ViewModels
                 set { SetProperty(ref _value, value); }
             }
         }
+
+        public PossibilityViewModel SelectedPossibility { get; set; }
     }
 }

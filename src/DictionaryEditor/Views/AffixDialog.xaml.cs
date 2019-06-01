@@ -41,5 +41,16 @@ namespace DictionaryEditor.Views
         {
             DialogResult = true;
         }
+
+        private void AddPosibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            _viewModel.Possibilities.Add(new AffixDialogViewModel.PossibilityViewModel());
+        }
+
+        private void RemovePosibilityButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_viewModel.SelectedPossibility == null) return;
+            _viewModel.Possibilities.Remove(_viewModel.SelectedPossibility);
+        }
     }
 }

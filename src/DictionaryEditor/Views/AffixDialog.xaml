@@ -11,6 +11,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="5" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="5" />
             <RowDefinition />
             <RowDefinition Height="5" />
             <RowDefinition Height="Auto" /> 
@@ -22,32 +24,32 @@
             <TextBox Text="{Binding Name}" FontSize="16" FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}" />
         </controls:LabeledControl>
 
-        <DataGrid Grid.Row="2"
+        <StackPanel HorizontalAlignment="Right" Grid.Row="2" Orientation="Horizontal">
+            <Button Content="Remove" x:Name="removePosibilityButton" Click="RemovePosibilityButton_Click" />
+            <TextBlock Width="10" />
+            <Button Content="Add" x:Name="addPosibilityButton" Click="AddPosibilityButton_Click" />
+        </StackPanel>
+        
+        <DataGrid Grid.Row="4"
                   AutoGenerateColumns="False"
-                  CanUserAddRows="True" 
+                  CanUserAddRows="False" 
                   CanUserDeleteRows="True"
+                  SelectedItem="{Binding SelectedPossibility}"
                   ItemsSource="{Binding Possibilities}"
                   FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}">
             
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Path=Value}" Width="*" />
-                <DataGridTemplateColumn IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="X" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         
-        <controls:LabeledControl Label="Stats: " Grid.Row="4">
+        <controls:LabeledControl Label="Stats: " Grid.Row="6">
             <StackPanel>
                 <TextBlock Text="{Binding NoOfPatterns, StringFormat='Number Of patterns: {0}'}" />
             </StackPanel>
         </controls:LabeledControl>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="6" HorizontalAlignment="Right">
+        <StackPanel Orientation="Horizontal" Grid.Row="8" HorizontalAlignment="Right">
             <Button Content="Cancel" IsCancel="True"/>
             <TextBlock Width="5" />
             <Button x:Name="okayButton" Click="OkayButton_Click" Content="Okay" IsDefault="True"/>

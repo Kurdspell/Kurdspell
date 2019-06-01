@@ -1,20 +1,11 @@
 ﻿using DictionaryEditor.ViewModels;
 using Kurdspell;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DictionaryEditor.Views
 {
@@ -88,10 +79,7 @@ namespace DictionaryEditor.Views
                 if (dialog.DialogResult == true)
                 {
                     var newAffix = dialog.GetAffix();
-                    if (newAffix != affix)
-                    {
-                        _viewModel.ReplaceAffix(affix, newAffix);
-                    }
+                    _viewModel.ReplaceAffix(affix, newAffix);
                 }
             }
         }

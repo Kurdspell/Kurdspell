@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Kurdspell
 {
-    public struct Pattern : IEquatable<Pattern>
+    public struct Pattern
     {
         public const char OpenBracket = '[';
         public const char CloseBracket = ']';
@@ -283,20 +283,6 @@ namespace Kurdspell
             return true;
         }
 
-        private static bool CanBeTheSame(StringBuilder builder, string text)
-        {
-            if (builder.Length > text.Length)
-                return false;
-
-            for (int i = 0; i < builder.Length; i++)
-            {
-                if (builder[i] != text[i])
-                    return false;
-            }
-
-            return true;
-        }
-
         public bool IsCloseEnough(string word, IReadOnlyDictionary<string, Affix> affixes, StringBuilder builder = null, int i = 0)
         {
             builder = builder ?? new StringBuilder(word.Length);
@@ -470,34 +456,9 @@ namespace Kurdspell
         }
 
         public override string ToString() => Template;
-
-        public override bool Equals(object obj)
-        {
-            return obj is Pattern && Equals((Pattern)obj);
-        }
-
-        public bool Equals(Pattern other)
-        {
-            return Template == other.Template;
-        }
-
-        public override int GetHashCode()
-        {
-            return -2097975069 + EqualityComparer<string>.Default.GetHashCode(Template);
-        }
-
-        public static bool operator ==(Pattern pattern1, Pattern pattern2)
-        {
-            return pattern1.Equals(pattern2);
-        }
-
-        public static bool operator !=(Pattern pattern1, Pattern pattern2)
-        {
-            return !(pattern1 == pattern2);
-        }
     }
 
-    public struct Affix : IEquatable<Affix>
+    public struct Affix
     {
         public Affix(string name, params string[] values)
         {
@@ -507,35 +468,6 @@ namespace Kurdspell
 
         public string Name { get; }
         public string[] Values { get; }
-
-        public override bool Equals(object obj)
-        {
-            return obj is Affix && Equals((Affix)obj);
-        }
-
-        public bool Equals(Affix other)
-        {
-            return Name == other.Name &&
-                   EqualityComparer<string[]>.Default.Equals(Values, other.Values);
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = -1385264047;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(Values);
-            return hashCode;
-        }
-
-        public static bool operator == (Affix first, Affix second)
-        {
-            return first.Equals(second);
-        }
-
-        public static bool operator !=(Affix first, Affix second)
-        {
-            return !first.Equals(second);
-        }
     }
 }
 

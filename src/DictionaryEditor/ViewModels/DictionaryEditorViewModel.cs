@@ -1,5 +1,4 @@
 ﻿using Kurdspell;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -46,6 +45,9 @@ namespace DictionaryEditor.ViewModels
         {
             var index = Affixes.IndexOf(current);
             Affixes[index] = changed;
+
+            if (current.Name == changed.Name)
+                return;
 
             foreach (var pattern in Patterns)
             {
