@@ -15,7 +15,7 @@ namespace DictionaryEditor.ViewModels
 
             Patterns = new ObservableCollection<PatternViewModel>(
                           spellChecker.GetPatterns()
-                                       .Select(p => new PatternViewModel(p, spellChecker.GetAffixes(), spellChecker))
+                                       .Select(p => new PatternViewModel(p, spellChecker.GetAffixes()))
                           );
             Affixes = new ObservableCollection<Affix>(spellChecker.GetAffixes().Values);
         }

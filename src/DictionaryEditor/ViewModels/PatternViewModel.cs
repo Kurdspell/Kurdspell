@@ -9,16 +9,13 @@ namespace DictionaryEditor.ViewModels
     public class PatternViewModel : BindableBase
     {
         private readonly IReadOnlyDictionary<string, Affix> _affixes;
-        private readonly SpellChecker _spellChecker;
         private static readonly IReadOnlyList<string> _emptyList = new List<string>();
 
         public PatternViewModel(
             Pattern p,
-            IReadOnlyDictionary<string, Affix> affixes,
-            SpellChecker spellChecker)
+            IReadOnlyDictionary<string, Affix> affixes)
         {
             _affixes = affixes;
-            _spellChecker = spellChecker;
             Pattern = p;
             _template = p.Template;
             SetParts(p);
@@ -26,7 +23,7 @@ namespace DictionaryEditor.ViewModels
 
         internal PatternViewModel Clone()
         {
-            return new PatternViewModel(Pattern, _affixes, _spellChecker);
+            return new PatternViewModel(Pattern, _affixes);
         }
 
         private ObservableCollection<PatternPartViewModel> _parts = new ObservableCollection<PatternPartViewModel>();
@@ -56,10 +53,7 @@ namespace DictionaryEditor.ViewModels
 
                     try
                     {
-                        var changed = new Pattern(_template);
-                        _spellChecker.RemoveFromDictionary(Pattern);
-                        _spellChecker.AddToDictionary(changed);
-                        Pattern = changed;
+                        Pattern = new Pattern(_template);
                         SetParts(Pattern);
                     }
                     catch (Exception)

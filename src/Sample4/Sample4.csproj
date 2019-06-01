@@ -5,6 +5,14 @@
     <UserSecretsId>e5734dc1-d2d5-4212-bedd-9e5254a2554f</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CodeAnalysisRuleSet />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CodeAnalysisRuleSet />
+  </PropertyGroup>
+
   <ItemGroup>
     <Content Include="..\Sample3\ckb-IQ.txt" Link="ckb-IQ.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
