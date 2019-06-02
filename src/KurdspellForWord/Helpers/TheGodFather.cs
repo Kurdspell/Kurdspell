@@ -46,9 +46,10 @@ namespace KurdspellForWord.Helpers
                 var control = new WpfHost();
                 control.Host.Child = new MistakesList(_mistakesListVM);
                 _taskPane = Globals.ThisAddIn.CustomTaskPanes.Add(control, "Kurdspell");
-                _taskPane.Visible = true;
             }
-            
+
+            _taskPane.Visible = true;
+
             return _taskPane;
         }
     }

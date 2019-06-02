@@ -84,9 +84,9 @@ namespace DictionaryEditor.ViewModels
         public List<Affix> GetAffixes() => Affixes.ToList();
         public Dictionary<string, string> GetProperties() => _properties;
 
-        public PatternViewModel CreatePattern()
+        public PatternViewModel CreatePattern(string template = "")
         {
-            return new PatternViewModel(new Pattern(), _affixDictionary);
+            return new PatternViewModel(new Pattern(template), _affixDictionary);
         }
     }
 }
