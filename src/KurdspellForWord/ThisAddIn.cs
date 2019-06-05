@@ -1,42 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using Word = Microsoft.Office.Interop.Word;
-using Office = Microsoft.Office.Core;
-using Microsoft.Office.Tools.Word;
-using System.IO;
-using KurdspellForWord.Helpers;
+using System.Diagnostics;
 
 namespace KurdspellForWord
 {
     public partial class ThisAddIn
     {
-        private async void ThisAddIn_Startup(object sender, System.EventArgs e)
+        private WindowsKeyboardHook _hook;
+
+        private void ThisAddIn_Startup(object sender, EventArgs e)
         {
-            using (var stream = File.Open("ckb-IQ.txt", FileMode.Open))
-            {
-                await TheGodFather.Please.LoadSpellCheckerAsync(stream);
-            }
+            _hook = new WindowsKeyboardHook();
+            _hook.KeyPressed += Hook_KeyPressed;
         }
 
-        private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
+        private void Hook_KeyPressed(object sender, WordTextChangedEventArgs e)
         {
+            Debug.WriteLine(e.Key);
+        }
+
+        private void ThisAddIn_Shutdown(object sender, EventArgs e)
+        {
+            _hook.Dispose();
         }
 
         #region VSTO generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// Required method for Designer support.
         /// </summary>
         private void InternalStartup()
         {
-            this.Startup += new System.EventHandler(ThisAddIn_Startup);
-            this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
+            Startup += ThisAddIn_Startup;
+            Shutdown += ThisAddIn_Shutdown;
         }
-        
+
         #endregion
     }
 }

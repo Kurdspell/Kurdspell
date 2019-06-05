@@ -161,11 +161,13 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Glue\WordTextChangedWatcher.cs" />
     <Compile Include="Glue\WpfHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Helpers\Mvvm.cs" />
     <Compile Include="Helpers\TheGodFather.cs" />
+    <Compile Include="Glue\SafeNativeMethods.cs" />
     <Compile Include="ViewModels\MistakeViewModel.cs" />
     <Compile Include="Ribbon.cs">
       <SubType>Component</SubType>
