@@ -38,45 +38,38 @@ namespace Kurdspell
         {
             return new List<Pattern>
             {
-                new Pattern("ب{0}بەخش{1}"),
-                new Pattern("دەخ{2}"),
-                new Pattern("دەکڕ{3}"),
-                new Pattern("دەچ{3}"),
-                new Pattern("مامۆستا{4}{0}{5}"),
-                new Pattern("ناو{0}"),
-                new Pattern("هیچ{0}"),
-                new Pattern("دارا{6}"),
+                new Pattern("ب[0]بەخش[1]"),
+                new Pattern("دەخ[2]"),
+                new Pattern("دەکڕ[3]"),
+                new Pattern("دەچ[3]"),
+                new Pattern("مامۆستا[4][0][5]"),
+                new Pattern("ناو[0]"),
+                new Pattern("هیچ[0]"),
+                new Pattern("دارا[6]"),
                 new Pattern("دوو"),
                 new Pattern("هیچ"),
-                new Pattern("من{0}"),
-                new Pattern("شت{5}{0}"),
-                new Pattern("نەکرد{6}"),
-                new Pattern("دار{4}{6}{5}"),
-                new Pattern("دیت{0}"),
-                new Pattern("دوور{6}"),
+                new Pattern("من[0]"),
+                new Pattern("شت[5][0]"),
+                new Pattern("نەکرد[6]"),
+                new Pattern("دار[4][6][5]"),
+                new Pattern("دیت[0]"),
+                new Pattern("دوور[6]"),
                 new Pattern("ئۆی"),
-                new Pattern("دادە{6}"),
+                new Pattern("دادە[6]"),
                 new Pattern("وەرە"),
                 new Pattern("دەرێ"),
                 new Pattern("دەوێ"),
                 new Pattern("ئەوە"),
-                new Pattern("ئازاد{6}"),
-                new Pattern("دۆ{6}"),
-                new Pattern("ئاو{6}"),
+                new Pattern("ئازاد[6]"),
+                new Pattern("دۆ[6]"),
+                new Pattern("ئاو[6]"),
                 new Pattern("زۆرە"),
             };
         }
 
         public static List<Pattern> GetPatterns()
         {
-            var list = new List<Pattern>
-            {
-                new Pattern("Bi{0}bexsh{1}"),
-                new Pattern("Dex{2}"),
-                new Pattern("Dekrri{3}"),
-                new Pattern("Dechi{3}"),
-                new Pattern("Mamosta{4}{0}{5}"),
-            };
+            var list = new List<Pattern>();
 
             for (int i = 0; i < 100_000; i++)
             {
@@ -108,10 +101,10 @@ namespace Kurdspell
                 {
                     index = _random.Next(0, word.Length - 1);
                 }
-                while (word[GetPreviousOrFirst(index)] == '{' || word[GetPreviousOrFirst(index)] == '}' || char.IsNumber(word[GetPreviousOrFirst(index)]));
+                while (word[GetPreviousOrFirst(index)] == Pattern.OpenBracket || word[GetPreviousOrFirst(index)] == Pattern.CloseBracket || char.IsNumber(word[GetPreviousOrFirst(index)]));
 
                 var affix = _random.Next(0, maxAffix + 1);
-                word = word.Substring(0, GetPreviousOrFirst(index)) + "{" + affix + "}" + word.Substring(index + 1, word.Length - index - 1);
+                word = word.Substring(0, GetPreviousOrFirst(index)) + Pattern.OpenBracket + affix + Pattern.CloseBracket + word.Substring(index + 1, word.Length - index - 1);
             }
 
             return word;

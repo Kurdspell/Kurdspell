@@ -16,6 +16,9 @@ namespace Evaluation
 
             var words = spellChecker.GetWordList().ToList();
 
+            var patternChars = spellChecker.GetPatterns().Select(p => p.Template).Sum(t => t.Count());
+            var variantChars = words.Sum(w => w.Count());
+
             for (int i = 0; i < words.Count; i++)
             {
                 var word = words[i];
