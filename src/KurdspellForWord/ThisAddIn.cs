@@ -1,19 +1,20 @@
-﻿using System;
+﻿using KurdspellForWord.Glue;
+using System;
 using System.Diagnostics;
 
 namespace KurdspellForWord
 {
     public partial class ThisAddIn
     {
-        private WindowsKeyboardHook _hook;
+        private KeyboardHook _hook;
 
         private void ThisAddIn_Startup(object sender, EventArgs e)
         {
-            _hook = new WindowsKeyboardHook();
+            _hook = new KeyboardHook();
             _hook.KeyPressed += Hook_KeyPressed;
         }
 
-        private void Hook_KeyPressed(object sender, WordTextChangedEventArgs e)
+        private void Hook_KeyPressed(object sender, KeyboardHookEventArgs e)
         {
             Debug.WriteLine(e.Key);
         }

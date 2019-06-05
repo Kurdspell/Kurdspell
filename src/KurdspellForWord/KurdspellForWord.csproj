@@ -161,7 +161,7 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Glue\WordTextChangedWatcher.cs" />
+    <Compile Include="Glue\KeyboardHook.cs" />
     <Compile Include="Glue\WpfHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
