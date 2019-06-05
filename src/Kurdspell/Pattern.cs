@@ -418,13 +418,13 @@ namespace Kurdspell
         public static List<string> GetTop(IReadOnlyList<Pattern> patterns, string word, int n, IReadOnlyDictionary<string, Affix> affixes)
         {
             ConcurrentBag<Pattern> closePatterns = new ConcurrentBag<Pattern>();
-            Parallel.For(0, patterns.Count, i =>
+            for (int i = 0; i < patterns.Count; i++)
             {
                 if (patterns[i].IsCloseEnough(word, affixes))
                 {
                     closePatterns.Add(patterns[i]);
                 }
-            });
+            };
 
             var suggestions = new List<string>();
 

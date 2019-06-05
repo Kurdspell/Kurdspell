@@ -67,14 +67,14 @@ namespace Kurdspell
             {
                 bool found = false;
 
-                Parallel.For(0, patterns.Count, (i, state) =>
+                for (int i = 0; i < patterns.Count; i++)
                 {
                     if (patterns[i].IsExactly(word, length, secondChar, thirdChar, fourthChar, fifthChar, _affixes))
                     {
                         found = true;
-                        state.Break();
+                        break;
                     }
-                });
+                };
 
                 return found;
             }
