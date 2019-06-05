@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using KurdspellForWord;
 using KurdspellForWord.Glue;
@@ -63,8 +62,6 @@ class WindowsKeyboardHook
         {
             Keys pressedKey = (Keys)wParam;
             var range = Globals.ThisAddIn.Application.Selection.Range;
-
-            //var data = Marshal.PtrToStructure<KeyboardHookData>(lParam);
 
             KeyPressed?.Invoke(this, new WordTextChangedEventArgs(pressedKey, range.Start, range.End));
         }
