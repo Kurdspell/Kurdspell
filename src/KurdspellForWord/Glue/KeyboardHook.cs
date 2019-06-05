@@ -5,19 +5,19 @@ namespace KurdspellForWord.Glue
 {
     internal class KeyboardHookEventArgs : EventArgs
     {
-        public KeyboardHookEventArgs(Keys key, int position, int end)
+        public KeyboardHookEventArgs(Keys key, int position, int activeDocumentId)
         {
             Key = key;
-            Start = position;
-            End = end;
+            Position = position;
             KeysConverter kc = new KeysConverter();
             Text = kc.ConvertToString(key);
+            ActiveDocumentId = activeDocumentId;
         }
 
         public Keys Key { get; }
         public string Text { get; set; }
-        public int Start { get; }
-        public int End { get; }
+        public int Position { get; }
+        public int ActiveDocumentId { get; }
     }
 
     // https://stackoverflow.com/a/33897595/7003797
@@ -63,7 +63,7 @@ namespace KurdspellForWord.Glue
                 Keys pressedKey = (Keys)wParam;
                 var range = Globals.ThisAddIn.Application.Selection.Range;
 
-                KeyPressed?.Invoke(this, new KeyboardHookEventArgs(pressedKey, range.Start, range.End));
+                OnKeyPressed(pressedKey, range.Start, range.Document.DocID);
             }
 
             return SafeNativeMethods.CallNextHookEx(
@@ -71,6 +71,43 @@ namespace KurdspellForWord.Glue
                 nCode,
                 wParam,
                 lParam);
+        }
+
+        // https://stackoverflow.com/a/1916241/7003797
+        private void OnKeyPressed(Keys key, int position, int documentId)
+        {
+            if (KeyPressed != null)
+            {
+                var eventListeners = KeyPressed.GetInvocationList();
+
+                for (int index = 0; index < eventListeners.Length; index++)
+                {
+                    var methodToInvoke = (EventHandler<KeyboardHookEventArgs>)eventListeners[index];
+
+                    methodToInvoke.BeginInvoke(
+                        this,
+                        new KeyboardHookEventArgs(key, position, documentId),
+                        EndOnKeyPressed,
+                        null
+                        );
+                }
+            }
+        }
+
+        private void EndOnKeyPressed(IAsyncResult iar)
+        {
+            var ar = (System.Runtime.Remoting.Messaging.AsyncResult)iar;
+            var invokedMethod = (EventHandler<KeyboardHookEventArgs>)ar.AsyncDelegate;
+
+            try
+            {
+                invokedMethod.EndInvoke(iar);
+            }
+            catch
+            {
+                // Handle any exceptions that were thrown by the invoked method
+                Console.WriteLine("An event listener went kaboom!");
+            }
         }
 
         public void Dispose()
