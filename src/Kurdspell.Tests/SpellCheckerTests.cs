@@ -28,10 +28,10 @@ namespace Kurdspell.Tests
 
             var patterns = new List<Pattern>
             {
-                new Pattern("dex{0}"),
-                new Pattern("dekrr{1}"),
-                new Pattern("supas{2}dek{3}"),
-                new Pattern("m{4}{5}mos"),
+                new Pattern("dex[0]"),
+                new Pattern("dekrr[1]"),
+                new Pattern("supas[2]dek[3]"),
+                new Pattern("m[4][5]mos"),
             };
 
             var spellChecker = new SpellChecker(patterns, affixes);
@@ -60,9 +60,9 @@ namespace Kurdspell.Tests
 
             var patterns = new List<Pattern>
             {
-                new Pattern("دوور{0}"),
-                new Pattern("مامۆستا{4}{0}{5}"),
-                new Pattern("دە{7}تانی")
+                new Pattern("دوور[0]"),
+                new Pattern("مامۆستا[4][0][5]"),
+                new Pattern("دە[7]تانی")
             };
 
             var spellChecker = new SpellChecker(patterns, affixes);
@@ -88,9 +88,9 @@ namespace Kurdspell.Tests
 
             var patterns = new List<Pattern>
             {
-                new Pattern("dex{0}"),
-                new Pattern("dekrr{1}"),
-                new Pattern("supas{2}dek{3}"),
+                new Pattern("dex[0]"),
+                new Pattern("dekrr[1]"),
+                new Pattern("supas[2]dek[3]"),
             };
 
             var spellChecker = new SpellChecker(patterns, affixes);

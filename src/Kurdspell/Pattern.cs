@@ -357,7 +357,7 @@ namespace Kurdspell
             return true;
         }
 
-        public IEnumerable<IEnumerable<string>> Explode(IReadOnlyDictionary<string, Affix> affixes)
+        public List<IEnumerable<string>> Explode(IReadOnlyDictionary<string, Affix> affixes)
         {
             var sets = new List<IEnumerable<string>>();
             for (int i = 0; i < Parts.Count; i++)
@@ -375,40 +375,36 @@ namespace Kurdspell
                 sets.Add(set);
             }
 
-            return CartesianProduct.Linq(sets).ToArray();
-        }
+            var variants = CartesianProduct.Linq(sets).ToArray();
+            var list = new List<IEnumerable<string>>();
 
-        private List<string> Explode(string prefix, IReadOnlyList<object> parts, IReadOnlyList<Affix> affixes)
-        {
-            var list = new List<string>();
-
-            var builder = new StringBuilder(prefix, Template.Length);
-
-            for (int i = 0; i < parts.Count; i++)
+            foreach (var variant in variants)
             {
-                if (parts[i] is int affix)
+                bool duplicateParts = false;
+                int count = 0;
+                var flags = IsPartAnAffixFlags;
+                var affixParts = new HashSet<string>();
+                int i = 0;
+
+                foreach (var item in variant)
                 {
-                    var values = affixes[affix].Values;
-                    foreach (var value in values)
+                    if (IsPartAnAffixFlags[i])
                     {
-                        builder.Append(value);
-
-                        if (i < parts.Count - 1)
+                        count++;
+                        affixParts.Add(item);
+                        if (count != affixParts.Count)
                         {
-                            var newPrefix = builder.ToString();
-                            list.AddRange(Explode(newPrefix, parts.Skip(i + 1).ToList(), affixes));
+                            duplicateParts = true;
+                            break;
                         }
-                        else
-                        {
-                            list.Add(builder.ToString());
-                        }
-
-                        builder.Remove(builder.Length - value.Length, value.Length);
                     }
+
+                    i++;
                 }
-                else
+
+                if (!duplicateParts)
                 {
-                    builder.Append(parts[i] as string);
+                    list.Add(variant);
                 }
             }
 
@@ -432,8 +428,7 @@ namespace Kurdspell
                 return suggestions;
 
             var setsOfVariants = closePatterns
-                    .Select(p => p.Explode(affixes)
-                        .Select(v => string.Join(string.Empty, v))
+                    .Select(p => p.GetVariants(affixes)
                         .Distinct()
                         .Select(v => new
                         {
