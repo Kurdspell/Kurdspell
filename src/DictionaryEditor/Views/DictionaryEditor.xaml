@@ -8,6 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
+        <helpers:BooleanToBrushConverter True="LightSkyBlue" False="Transparent" x:Key="booleanToColorConverter" />
         <DataTemplate x:Key="affixTemplate">
             <Button Tag="{Binding }" PreviewMouseDoubleClick="PatternPart_PreviewMouseDoubleClick">
                 <Button.Template>
@@ -63,10 +64,17 @@
                   IsSynchronizedWithCurrentItem="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
                   MouseDoubleClick="PatternsList_MouseDoubleClick">
-           
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Background" Value="{Binding IsDirty, Converter={StaticResource booleanToColorConverter}}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ItemsControl ItemsSource="{Binding Parts}" ItemTemplateSelector="{StaticResource patternPartTemplateSelector}">
+                    <ItemsControl ItemsSource="{Binding Parts}"
+                                  ItemTemplateSelector="{StaticResource patternPartTemplateSelector}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />

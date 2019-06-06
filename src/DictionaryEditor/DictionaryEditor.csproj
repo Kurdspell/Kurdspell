@@ -62,6 +62,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controls\LabeledControl.cs" />
+    <Compile Include="Helpers\BooleanToBrushConverter.cs" />
     <Compile Include="Helpers\Mvvm.cs" />
     <Compile Include="Helpers\PatternPartTemplateSelector.cs" />
     <Compile Include="Helpers\PreferencesHelper.cs" />

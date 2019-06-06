@@ -62,8 +62,16 @@ namespace DictionaryEditor.ViewModels
 
                     IsValid = isValid;
                     RaisePropertyChanged(nameof(Variants));
+                    IsDirty = true;
                 }
             }
+        }
+
+        private bool _isDirty;
+        public bool IsDirty
+        {
+            get { return _isDirty; }
+            set { SetProperty(ref _isDirty, value); }
         }
 
         public Pattern Pattern { get; private set; }

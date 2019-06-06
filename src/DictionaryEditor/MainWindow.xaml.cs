@@ -159,6 +159,11 @@ namespace DictionaryEditor
                     vm.GetProperties());
 
                 await spellChecker.SaveAsync(path);
+
+                foreach(var pattern in vm.Patterns)
+                {
+                    pattern.IsDirty = false;
+                }
             }
             catch (Exception ex)
             {
