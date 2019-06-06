@@ -21,6 +21,15 @@ namespace DictionaryEditor.Views
             InitializeComponent();
             DataContext = _viewModel = new DictionaryEditorViewModel(spellChecker);
             Loaded += DictionaryEditor_Loaded;
+            KeyUp += DictionaryEditor_KeyUp;
+        }
+
+        private void DictionaryEditor_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                _viewModel.RemovePatternCommand.Execute(patternsList.SelectedItem);
+            }
         }
 
         private void DictionaryEditor_Loaded(object sender, RoutedEventArgs e)
