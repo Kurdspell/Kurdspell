@@ -22,6 +22,47 @@ namespace DictionaryEditor.Views
             InitializeComponent();
             DataContext = Pattern = viewModel.Clone();
             _parent = parent;
+            Loaded += PatternDialog_Loaded;
+        }
+
+        private void PatternDialog_Loaded(object sender, RoutedEventArgs e)
+        {
+            var menu = new ContextMenu();
+            foreach (var affix in _parent.Affixes)
+            {
+                var item = new MenuItem
+                {
+                    Header = $"[{affix.Name}]: {string.Join(",", affix.Values)}",
+                    Tag = affix
+                };
+
+                item.Click += InsertAffix_Click;
+                menu.Items.Add(item);
+            }
+
+            patternTextBox.ContextMenu = menu;
+        }
+
+        private void InsertAffix_Click(object sender, RoutedEventArgs e)
+        {
+            var item = sender as MenuItem;
+            var affix = (Affix)item.Tag;
+
+            var value = $"[{affix.Name}]";
+            var caretIndex = patternTextBox.CaretIndex;
+
+            if (string.IsNullOrEmpty(patternTextBox.SelectedText))
+            {
+                patternTextBox.Text = patternTextBox.Text.Insert(caretIndex, value);
+            }
+            else
+            {
+                var start = patternTextBox.SelectionStart;
+                patternTextBox.Text = patternTextBox.Text.Remove(patternTextBox.SelectionStart, patternTextBox.SelectionLength);
+                patternTextBox.Text = patternTextBox.Text.Insert(start, value);
+            }
+
+            patternTextBox.CaretIndex = caretIndex + value.Length;
         }
 
         private bool BraceIsProperlyClosed(string text, int startIndex)
