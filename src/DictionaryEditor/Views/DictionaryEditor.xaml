@@ -32,7 +32,7 @@
         <DataTemplate x:Key="normalTemplate">
             <TextBlock Text="{Binding Text}" />
         </DataTemplate>
-        
+
         <helpers:PatternPartTemplateSelector x:Key="patternPartTemplateSelector"
                                              Affix="{StaticResource affixTemplate}"
                                              Normal="{StaticResource normalTemplate}"/>
@@ -56,41 +56,49 @@
                     Command="{Binding RemovePatternCommand}"
                     CommandParameter="{Binding ElementName=patternsList, Path=SelectedItem}" />
         </ToolBar>
-        
+
         <TextBox x:Name="filterPatternsList" TextChanged="FilterPatternsList_TextChanged" Grid.Row="1" />
-        
+
         <ListView x:Name="patternsList" ItemsSource="{Binding Patterns}" Grid.Row="2"
                   SelectedItem="{Binding SelectedPattern}"
                   IsSynchronizedWithCurrentItem="True"
                   VirtualizingPanel.VirtualizationMode="Recycling"
-                  MouseDoubleClick="PatternsList_MouseDoubleClick">
+                  MouseDoubleClick="PatternsList_MouseDoubleClick"
+                  SizeChanged="PatternsList_SizeChanged">
 
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Background" Value="{Binding IsDirty, Converter={StaticResource booleanToColorConverter}}" />
                 </Style>
             </ListView.ItemContainerStyle>
-            
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ItemsControl ItemsSource="{Binding Parts}"
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn x:Name="numberGridViewColumn" Header="#" Width="50" DisplayMemberBinding="{Binding Number}" />
+                    <GridViewColumn x:Name="patternGridViewColumn">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ItemsControl ItemsSource="{Binding Parts}"
                                   ItemTemplateSelector="{StaticResource patternPartTemplateSelector}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </DataTemplate>
-            </ListView.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
         </ListView>
 
         <TextBlock Grid.Row="3" Text="{Binding ElementName=patternsList, Path=Items.Count, StringFormat='N0'}" />
 
         <TextBox x:Name="filterVariantsList" Grid.Column="1" Grid.Row="1" TextChanged="FilterVariantsList_TextChanged" />
-        
+
         <ListView x:Name="variantsList" ItemsSource="{Binding SelectedPattern.Variants}" Grid.Row="2" Grid.Column="1">
-            
+
         </ListView>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ElementName=variantsList, Path=Items.Count, StringFormat='N0'}" />

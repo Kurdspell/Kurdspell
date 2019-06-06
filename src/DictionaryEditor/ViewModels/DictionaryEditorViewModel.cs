@@ -27,7 +27,10 @@ namespace DictionaryEditor.ViewModels
                 if (pattern is null) return;
 
                 Patterns.Remove(pattern);
+                FixPatternNumbers();
             });
+
+            FixPatternNumbers();
         }
 
         public ICommand RemovePatternCommand { get; }
@@ -77,6 +80,15 @@ namespace DictionaryEditor.ViewModels
                         break;
                     }
                 }
+            }
+        }
+
+        public void FixPatternNumbers()
+        {
+            int number = 1;
+            foreach(var pattern in Patterns)
+            {
+                pattern.Number = number++;
             }
         }
 

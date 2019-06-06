@@ -107,6 +107,21 @@ namespace DictionaryEditor.Views
             if (dialog.Result == true)
             {
                 _viewModel.Patterns.Add(dialog.Pattern);
+                dialog.Pattern.Number = _viewModel.Patterns.Count;
+            }
+        }
+
+        private void PatternsList_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            const int margin = 30;
+            var width = patternsList.ActualWidth - numberGridViewColumn.ActualWidth - margin;
+            if (width > margin)
+            {
+                patternGridViewColumn.Width = width;
+            }
+            else
+            {
+                patternGridViewColumn.Width = margin;
             }
         }
     }
