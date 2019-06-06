@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DictionaryEditor"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="Dictionary Editor"
         Height="450"
         Width="800"
         AllowDrop="True"
+        Closing="Window_Closing"
         Drop="Window_Drop">
 
     <Window.CommandBindings>

@@ -7,14 +7,17 @@ namespace DictionaryEditor.ViewModels
 {
     public class PatternViewModel : BindableBase
     {
+        private readonly DictionaryEditorViewModel _parent;
         private readonly IReadOnlyDictionary<string, Affix> _affixes;
         private static readonly IReadOnlyList<string> _emptyList = new List<string>();
 
         public PatternViewModel(
+            DictionaryEditorViewModel parent,
             Pattern p,
             IReadOnlyDictionary<string, Affix> affixes)
         {
             _affixes = affixes;
+            _parent = parent;
             Pattern = p;
             _template = p.Template;
             SetParts(p);
@@ -22,7 +25,7 @@ namespace DictionaryEditor.ViewModels
 
         internal PatternViewModel Clone()
         {
-            var pattern = new PatternViewModel(Pattern, _affixes);
+            var pattern = new PatternViewModel(_parent, Pattern, _affixes);
             pattern.Number = Number;
             return pattern;
         }
@@ -73,7 +76,16 @@ namespace DictionaryEditor.ViewModels
         public bool IsDirty
         {
             get { return _isDirty; }
-            set { SetProperty(ref _isDirty, value); }
+            set
+            {
+                if (SetProperty(ref _isDirty, value))
+                {
+                    if (_isDirty)
+                    {
+                        _parent.IsDirty = true;
+                    }
+                }
+            }
         }
 
         private int _number;

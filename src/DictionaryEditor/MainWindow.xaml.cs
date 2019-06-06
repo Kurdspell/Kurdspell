@@ -1,5 +1,6 @@
 ﻿using DictionaryEditor.Helpers;
 using DictionaryEditor.Models;
+using DictionaryEditor.ViewModels;
 using Kurdspell;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace DictionaryEditor
         private string _filePath = null;
         private Preferences _preferences;
         private readonly IReadOnlyCollection<MenuItem> _originalFileSubMenues;
+        private string _title;
 
         public MainWindow()
         {
@@ -160,7 +162,7 @@ namespace DictionaryEditor
 
                 await spellChecker.SaveAsync(path);
 
-                foreach(var pattern in vm.Patterns)
+                foreach (var pattern in vm.Patterns)
                 {
                     pattern.IsDirty = false;
                 }
@@ -185,8 +187,13 @@ namespace DictionaryEditor
                 mainContent.Content = new Views.DictionaryEditor(spellChecker);
                 _canSave = true;
                 _filePath = path;
+                _title = $"Dictionary Editor - '{LimitString(_filePath, 30)}'";
+                Title = _title;
                 _preferences.AddPathToRecentFiles(path);
                 ReloadRecentFileMenuItems();
+
+                var viewModel = (mainContent.Content as FrameworkElement).DataContext as DictionaryEditorViewModel;
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
             }
             catch (Exception ex)
             {
@@ -196,6 +203,21 @@ namespace DictionaryEditor
             finally
             {
                 SetIsBusy(false);
+            }
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(DictionaryEditorViewModel.IsDirty))
+            {
+                var vm = sender as DictionaryEditorViewModel;
+                var title = _title;
+                if (vm.IsDirty)
+                {
+                    title += " (Unsaved)";
+                }
+
+                Title = title;
             }
         }
 
@@ -214,14 +236,7 @@ namespace DictionaryEditor
                 int number = 1;
                 foreach (var file in _preferences.RecentFiles)
                 {
-                    const int limit = 25;
-                    var path = file;
-                    if (file.Length > limit)
-                    {
-                        var startIndex = file.Length - limit - 1;
-                        path = "..." + path.Substring(startIndex);
-                    }
-
+                    var path = LimitString(file, 25);
                     var item = new MenuItem
                     {
                         Header = $"Open '{path}'",
@@ -236,6 +251,17 @@ namespace DictionaryEditor
                     number++;
                 }
             }
+        }
+
+        private string LimitString(string path, int limit)
+        {
+            if (path.Length > limit)
+            {
+                var startIndex = path.Length - limit - 1;
+                path = "..." + path.Substring(startIndex);
+            }
+
+            return path;
         }
 
         private void RecentFileMenuItemClick(object sender, RoutedEventArgs e)
@@ -259,6 +285,19 @@ namespace DictionaryEditor
         {
             _isBusy = busy;
             progressBorder.Visibility = _isBusy ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var vm = (mainContent.Content as FrameworkElement).DataContext as DictionaryEditorViewModel;
+            if (vm?.IsDirty == true)
+            {
+                var response = MessageBox.Show("There are unsaved changes, are you sure you want to exit?", "Unsaved changes", MessageBoxButton.YesNo);
+                if (response != MessageBoxResult.Yes)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
     }
 }
