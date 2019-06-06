@@ -59,13 +59,11 @@ namespace Kurdspell
             Parts = parts;
             IsPartAnAffixFlags = flags;
 
-            _firstChar = Template.Length >= 1 ? Template[0] : '\0';
+            _isFirstPartAffix = flags[0];
             _secondChar = Template.Length >= 2 ? Template[1] : '\0';
             _thirdChar = Template.Length >= 3 ? Template[2] : '\0';
             _fourthChar = Template.Length >= 4 ? Template[3] : '\0';
             _fifthChar = Template.Length >= 5 ? Template[4] : '\0';
-
-            _length = (byte)Template.Length;
         }
 
         public readonly string Template;
@@ -73,16 +71,18 @@ namespace Kurdspell
         public IReadOnlyList<string> Parts { get; }
         public IReadOnlyList<bool> IsPartAnAffixFlags { get; }
 
-        private readonly char _firstChar;
         private readonly char _secondChar;
         private readonly char _thirdChar;
         private readonly char _fourthChar;
         private readonly char _fifthChar;
-        private readonly byte _length;
+        private readonly bool _isFirstPartAffix;
 
-        public bool IsExactly(string word, int wLength, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyDictionary<string, Affix> affixes, int partIndex = 1, int charIndex = 0)
+        public bool IsExactly(string word, int wLength, char wSecondChar, char wThirdChar, char wFourthChar, char wFifthChar, IReadOnlyDictionary<string, Affix> affixes, int partIndex = -1, int charIndex = 0)
         {
-            if (charIndex == 0)
+            if (partIndex == -1)
+                partIndex = _isFirstPartAffix ? 0 : 1;
+
+            if (charIndex == 0 && !_isFirstPartAffix)
             {
                 bool cont = true;
                 if (cont)

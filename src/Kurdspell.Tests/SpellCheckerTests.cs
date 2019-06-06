@@ -14,6 +14,9 @@ namespace Kurdspell.Tests
         [InlineData("supastndekeyn", false)]
         [InlineData("supastandekem", true)]
         [InlineData("mamostaaa", false)]
+        [InlineData("dekird", true)]
+        [InlineData("kird", true)]
+        [InlineData("dkird", false)]
         public void CheckSpelling(string word, bool expected)
         {
             var affixes = new List<Affix>
@@ -22,8 +25,9 @@ namespace Kurdspell.Tests
                 new Affix("1", "im", "in", "it", "n", "et", "n"),
                 new Affix("2", "m", "man", "t", "tan", "y", "yan"),
                 new Affix("3", "em", "eyn", "eyt", "en", "at", "en"),
-                new Affix("4", new string[] { "m", "in", "a", "n", "et", "n" }),
-                new Affix("5", new string[] { "ish", "" }),
+                new Affix("4", "m", "in", "a", "n", "et", "n" ),
+                new Affix("5", "ish", "" ),
+                new Affix("6", "de", ""),
             };
 
             var patterns = new List<Pattern>
@@ -32,6 +36,7 @@ namespace Kurdspell.Tests
                 new Pattern("dekrr[1]"),
                 new Pattern("supas[2]dek[3]"),
                 new Pattern("m[4][5]mos"),
+                new Pattern("[6]kird"),
             };
 
             var spellChecker = new SpellChecker(patterns, affixes);
@@ -76,6 +81,8 @@ namespace Kurdspell.Tests
         [InlineData("dekrim", "dekrrim")]
         [InlineData("spastandekeyn", "supastandekeyn")]
         [InlineData("supastandkem", "supastandekem")]
+        [InlineData("dkird", "dekird")]
+        [InlineData("krd", "kird")]
         public void GetSuggestions(string word, string suggestion)
         {
             var affixes = new List<Affix>
@@ -84,6 +91,7 @@ namespace Kurdspell.Tests
                 new Affix("1", "im", "in", "it", "n", "et", "n"),
                 new Affix("2", "m", "man", "t", "tan", "y", "yan"),
                 new Affix("3", "em", "eyn", "eyt", "en", "at", "en"),
+                new Affix("4", "de", ""),
             };
 
             var patterns = new List<Pattern>
@@ -91,6 +99,7 @@ namespace Kurdspell.Tests
                 new Pattern("dex[0]"),
                 new Pattern("dekrr[1]"),
                 new Pattern("supas[2]dek[3]"),
+                new Pattern("[4]kird"),
             };
 
             var spellChecker = new SpellChecker(patterns, affixes);

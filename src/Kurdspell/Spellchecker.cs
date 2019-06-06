@@ -106,12 +106,55 @@ namespace Kurdspell
 
         private void AddPattern(Pattern pattern)
         {
-            if (!_dictionary.ContainsKey(pattern.Template[0]))
+            if (pattern.IsPartAnAffixFlags[0])
             {
-                _dictionary[pattern.Template[0]] = new List<Pattern>();
+                var letters = GetFirstChars(pattern, 0);
+                foreach(var letter in letters)
+                {
+                    AddPatternToDictionary(letter, pattern);
+                }
+            }
+            else
+            {
+                AddPatternToDictionary(pattern.Template[0], pattern);
+            }
+        }
+
+        private List<char> GetFirstChars(Pattern pattern, int partIndex)
+        {
+            if (pattern.IsPartAnAffixFlags[partIndex])
+            {
+                var affix = (Affix)_affixes[pattern.Parts[partIndex]];
+                var letters = new List<char>();
+
+                foreach(var value in affix.Values)
+                {
+                    if (value.Length == 0 && partIndex < pattern.Parts.Count)
+                    {
+                        letters.AddRange(GetFirstChars(pattern, partIndex + 1));
+                    }
+                    else
+                    {
+                        letters.Add(value[0]);
+                    }
+                }
+
+                return letters;
+            }
+            else
+            {
+                return new List<char> { pattern.Parts[partIndex][0] };
+            }
+        }
+
+        private void AddPatternToDictionary(char c, Pattern p)
+        {
+            if (!_dictionary.ContainsKey(c))
+            {
+                _dictionary[c] = new List<Pattern>();
             }
 
-            _dictionary[pattern.Template[0]].Add(pattern);
+            _dictionary[c].Add(p);
         }
 
         #region Parsing Dictionary
