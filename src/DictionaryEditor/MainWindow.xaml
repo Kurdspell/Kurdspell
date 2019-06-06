@@ -22,27 +22,34 @@
         <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
     </Window.InputBindings>
 
-    <DockPanel LastChildFill="True">
-        <Menu x:Name="mainMenu" DockPanel.Dock="Top">
-            <MenuItem x:Name="fileMenuItem" Header="_File">
-                <MenuItem x:Name="openDictionaryMenuItem" Header="_Open" Command="Open" InputGestureText="Ctrl+O" />
-                <MenuItem x:Name="saveDictionaryMenuItem" Header="_Save" Command="Save" InputGestureText="Ctrl+S" />
-                <MenuItem x:Name="saveAsDictionaryMenuItem" Header="Save _As" Command="SaveAs" />
-            </MenuItem>
+    <Grid>
+        <DockPanel LastChildFill="True">
+            <Menu x:Name="mainMenu" DockPanel.Dock="Top">
+                <MenuItem x:Name="fileMenuItem" Header="_File">
+                    <MenuItem x:Name="openDictionaryMenuItem" Header="_Open" Command="Open" InputGestureText="Ctrl+O" />
+                    <MenuItem x:Name="saveDictionaryMenuItem" Header="_Save" Command="Save" InputGestureText="Ctrl+S" />
+                    <MenuItem x:Name="saveAsDictionaryMenuItem" Header="Save _As" Command="SaveAs" />
+                </MenuItem>
 
-            <MenuItem x:Name="viewMenuItem" Header="_View">
-                <MenuItem x:Name="rtlDictionaryMenuItem" IsCheckable="True" IsChecked="True" Header="_Right To Left" Click="RtlDictionaryMenuItem_Click" />
-                <MenuItem x:Name="ltrDictionaryMenuItem" IsCheckable="True" Header="_Left To Right" Click="LtrDictionaryMenuItem_Click" />
-            </MenuItem>
-        </Menu>
+                <MenuItem x:Name="viewMenuItem" Header="_View">
+                    <MenuItem x:Name="rtlDictionaryMenuItem" IsCheckable="True" IsChecked="True" Header="_Right To Left" Click="RtlDictionaryMenuItem_Click" />
+                    <MenuItem x:Name="ltrDictionaryMenuItem" IsCheckable="True" Header="_Left To Right" Click="LtrDictionaryMenuItem_Click" />
+                </MenuItem>
+            </Menu>
 
-        <ContentControl x:Name="mainContent"
+            <ContentControl x:Name="mainContent"
                         FlowDirection="{Binding Source={x:Static local:App.This}, Path=Direction}">
 
-            <TextBlock Text="Open a dictionary file by dropping it here"
+                <TextBlock Text="Open a dictionary file by dropping it here"
                        TextAlignment="Center"
                        FlowDirection="LeftToRight"
                        VerticalAlignment="Center" />
-        </ContentControl>
-    </DockPanel>
+            </ContentControl>
+        </DockPanel>
+
+        <Border x:Name="progressBorder" Visibility="Collapsed" Background="#a000">
+            <TextBlock Text="Please wait..." HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="32" />
+        </Border>
+    </Grid>
 </Window>

@@ -40,6 +40,8 @@ namespace DictionaryEditor
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
+            if (_isBusy) return;
+
             if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) &&
                 (e.Key >= Key.D1 && e.Key <= Key.D9))
             {
@@ -146,6 +148,7 @@ namespace DictionaryEditor
         {
             try
             {
+                SetIsBusy(true);
                 var editor = mainContent.Content as Views.DictionaryEditor;
 
                 var vm = editor.DataContext as ViewModels.DictionaryEditorViewModel;
@@ -162,12 +165,17 @@ namespace DictionaryEditor
                 Debug.WriteLine(ex.ToString());
                 MessageBox.Show(ex.Message);
             }
+            finally
+            {
+                SetIsBusy(false);
+            }
         }
 
         private async Task OpenDictionary(string path)
         {
             try
             {
+                SetIsBusy(true);
                 var spellChecker = await SpellChecker.FromFileAsync(path);
                 mainContent.Content = new Views.DictionaryEditor(spellChecker);
                 _canSave = true;
@@ -179,6 +187,10 @@ namespace DictionaryEditor
             {
                 Debug.WriteLine(ex.ToString());
                 MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                SetIsBusy(false);
             }
         }
 
@@ -194,7 +206,7 @@ namespace DictionaryEditor
             {
                 fileMenuItem.Items.Add(new Separator());
 
-                int i = 1;
+                int number = 1;
                 foreach (var file in _preferences.RecentFiles)
                 {
                     const int limit = 25;
@@ -208,14 +220,15 @@ namespace DictionaryEditor
                     var item = new MenuItem
                     {
                         Header = $"Open '{path}'",
-                        InputGestureText = $"Ctrl+{i++}",
+                        InputGestureText = $"Ctrl+{number}",
                         ToolTip = file,
-                        Tag = i - 1,
+                        Tag = number - 1,
                     };
 
                     item.Click += RecentFileMenuItemClick;
 
                     fileMenuItem.Items.Add(item);
+                    number++;
                 }
             }
         }
@@ -234,6 +247,13 @@ namespace DictionaryEditor
                 var files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 await OpenDictionary(files[0]);
             }
+        }
+
+        private bool _isBusy = false;
+        void SetIsBusy(bool busy)
+        {
+            _isBusy = busy;
+            progressBorder.Visibility = _isBusy ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }
