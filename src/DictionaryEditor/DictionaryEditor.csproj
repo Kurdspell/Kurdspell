@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
       <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
@@ -61,6 +64,8 @@
     <Compile Include="Controls\LabeledControl.cs" />
     <Compile Include="Helpers\Mvvm.cs" />
     <Compile Include="Helpers\PatternPartTemplateSelector.cs" />
+    <Compile Include="Helpers\PreferencesHelper.cs" />
+    <Compile Include="Models\Preferences.cs" />
     <Compile Include="ViewModels\AffixDialogViewModel.cs" />
     <Compile Include="ViewModels\DictionaryEditorViewModel.cs" />
     <Compile Include="ViewModels\PatternViewModel.cs" />
