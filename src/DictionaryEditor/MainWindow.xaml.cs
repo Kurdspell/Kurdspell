@@ -166,6 +166,8 @@ namespace DictionaryEditor
                 {
                     pattern.IsDirty = false;
                 }
+
+                vm.IsDirty = false;
             }
             catch (Exception ex)
             {
