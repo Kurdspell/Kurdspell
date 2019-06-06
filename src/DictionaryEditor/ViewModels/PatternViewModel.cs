@@ -22,7 +22,9 @@ namespace DictionaryEditor.ViewModels
 
         internal PatternViewModel Clone()
         {
-            return new PatternViewModel(Pattern, _affixes);
+            var pattern = new PatternViewModel(Pattern, _affixes);
+            pattern.Number = Number;
+            return pattern;
         }
 
         private ObservableCollection<PatternPartViewModel> _parts = new ObservableCollection<PatternPartViewModel>();
