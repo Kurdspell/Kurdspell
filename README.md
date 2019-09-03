@@ -1,2 +1,2 @@
 # Kurdspell
-Kurdspell is a project to create a Kurdish dictionary.
+Kurdspell is a project to create a Kurdish spellchecker.
